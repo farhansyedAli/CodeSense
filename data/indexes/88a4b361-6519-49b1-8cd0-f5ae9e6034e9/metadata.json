@@ -1,0 +1,8 @@
+{
+  "repo_id": "88a4b361-6519-49b1-8cd0-f5ae9e6034e9",
+  "repo_url": "https://github.com/pallets/flask",
+  "chunk_count": 1705,
+  "graph_nodes": 1309,
+  "graph_edges": 18320,
+  "embedding_model": "all-MiniLM-L6-v2"
+}

@@ -8,7 +8,8 @@ from fastapi.responses import FileResponse
 from app.config import settings
 from app.database import engine, Base
 from app.routers import health, repositories, langgraph_test
-
+from app.models import Repository
+from app.routers import health, repositories, query, file, langgraph_test
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -39,12 +40,17 @@ def create_app() -> FastAPI:
     app.include_router(health.router)
     app.include_router(repositories.router, prefix="/api")
     app.include_router(langgraph_test.router)
+    app.include_router(health.router)
+    app.include_router(repositories.router, prefix="/api")
+    app.include_router(query.router, prefix="/api")
+    app.include_router(langgraph_test.router)
+    app.include_router(file.router, prefix="/api")
 
     # Serve the existing HTML/CSS frontend (Sprint 0 only)
     # Path: Sprint 1/frontend/  (sibling of backend/)
     frontend_dir = Path(__file__).resolve().parent.parent.parent / "frontend"
     if frontend_dir.exists():
-        app.mount("/static", StaticFiles(directory=str(frontend_dir)), name="static")
+        app.mount("/", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
 
         @app.get("/", include_in_schema=False)
         async def root():

@@ -84,7 +84,7 @@
     <div class="url-bar">
       <span style="font-size:13px;color:var(--muted);flex-shrink:0">github.com/</span>
       <input class="url-input" value="django/django" placeholder="owner/repository">
-      <button class="btn-primary" onclick="simulateIndex()">↻ Re-index</button>
+      <button class="btn-primary" onclick="connectRepository()">↻ Connect / Re-index</button>
     </div>
 
     <!-- TABS -->
@@ -523,118 +523,6 @@
 
 </div>
 
-<script>
-  // Tab switching
-  function switchTab(name) {
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById('panel-' + name).classList.add('active');
-    document.getElementById('tab-' + name).classList.add('active');
-  }
-
-  // Show file in right panel
-  function showFile(path, line) {
-    document.getElementById('right-title').textContent = 'Source · ' + path.split('/').pop();
-    document.getElementById('preview-path').textContent = path;
-    document.getElementById('right-panel').style.display = 'flex';
-  }
-
-  function closeRight() {
-    // keep panel but could hide on mobile
-  }
-
-  // Toggle security finding
-  function toggleFinding(el) {
-    el.classList.toggle('open');
-  }
-
-  // Fill Q&A input
-  function fillQ(text) {
-    document.getElementById('qa-input').value = text;
-    document.getElementById('qa-input').focus();
-  }
-
-  function loadQuery(text) {
-    switchTab('qa');
-    fillQ(text);
-  }
-
-  // Simulate sending a message
-  function sendMessage() {
-    const input = document.getElementById('qa-input');
-    const text = input.value.trim();
-    if (!text) return;
-
-    const messages = document.getElementById('messages');
-    const typingMsg = document.getElementById('typing-msg');
-
-    // Add user message
-    const userMsg = document.createElement('div');
-    userMsg.className = 'msg';
-    userMsg.innerHTML = `
-      <div class="msg-avatar user">You</div>
-      <div class="msg-body">
-        <div class="msg-role">You</div>
-        <div class="msg-text">${escHtml(text)}</div>
-      </div>`;
-    messages.insertBefore(userMsg, typingMsg);
-
-    // Show typing
-    typingMsg.style.display = 'flex';
-    input.value = '';
-    messages.scrollTop = messages.scrollHeight;
-
-    // Simulate response after delay
-    setTimeout(() => {
-      typingMsg.style.display = 'none';
-      const aiMsg = document.createElement('div');
-      aiMsg.className = 'msg';
-      aiMsg.innerHTML = `
-        <div class="msg-avatar ai">CS</div>
-        <div class="msg-body">
-          <div class="msg-role">CodeSense</div>
-          <div class="msg-text">
-            <p>Searching the indexed codebase for <em>"${escHtml(text)}"</em>…</p>
-            <p>I found relevant code in <a class="cite">📄 django/core/handlers/base.py:82</a>. Every claim is grounded in the source — click any citation to view the exact lines.</p>
-          </div>
-        </div>`;
-      messages.insertBefore(aiMsg, typingMsg);
-      messages.scrollTop = messages.scrollHeight;
-    }, 1400);
-  }
-
-  function handleKey(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  }
-
-  function escHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  // Simulate re-index
-  function simulateIndex() {
-    const btn = event.target;
-    btn.textContent = '⏳ Indexing…';
-    btn.disabled = true;
-    setTimeout(() => {
-      btn.textContent = '✓ Done';
-      setTimeout(() => { btn.textContent = '↻ Re-index'; btn.disabled = false; }, 1500);
-    }, 2000);
-  }
-
-  // Impact analysis
-  function runImpact() {
-    const val = document.getElementById('impact-input').value.trim();
-    if (!val) return;
-    const btn = event.target;
-    btn.textContent = 'Analysing…';
-    btn.disabled = true;
-    setTimeout(() => { btn.textContent = 'Analyse'; btn.disabled = false; }, 1200);
-  }
-</script>
+<script src="script.js"></script>
 </body>
 </html>

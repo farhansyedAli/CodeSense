@@ -1,0 +1,8 @@
+{
+  "repo_id": "a8568388-33c1-4129-a911-f4af11037aee",
+  "repo_url": "https://github.com/psf/requests",
+  "chunk_count": 844,
+  "graph_nodes": 717,
+  "graph_edges": 4078,
+  "embedding_model": "all-MiniLM-L6-v2"
+}

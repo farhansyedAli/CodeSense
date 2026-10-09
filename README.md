@@ -1,4 +1,3 @@
-
 # CodeSense — Sprint 1 README
 
 A complete guide to the project structure, architecture, and testing procedure for Sprint 1.

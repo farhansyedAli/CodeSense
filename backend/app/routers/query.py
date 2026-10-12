@@ -7,7 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
 
+from app.config import settings
 from app.database import get_db
+from app.services import llm_service
 from app.services import repository_service as svc
 
 router = APIRouter(tags=["query"])
@@ -62,13 +64,14 @@ async def query(
 
     chunks, embeddings, model, _metadata = _load_index(repo_id)
 
-    # Embed the query
+    # Embed the query and retrieve the most similar chunks
     query_vec = model.encode([question], show_progress_bar=False)
     similarities = cosine_similarity(query_vec, embeddings)[0]
-    top_indices = np.argsort(similarities)[::-1][:3]
+    top_indices = np.argsort(similarities)[::-1][: settings.llm_top_k]
 
-    # Compose the response with citations
+    # Build the response payload (previews) and the LLM input (full code)
     results = []
+    llm_chunks = []
     for idx in top_indices:
         chunk = chunks[idx]
         results.append({
@@ -80,20 +83,33 @@ async def query(
             "chunk_type": chunk["chunk_type"],
             "code_preview": chunk["code"][:400],
         })
+        llm_chunks.append({
+            "file": chunk["file_path"],
+            "start_line": chunk["start_line"],
+            "end_line": chunk["end_line"],
+            "name": chunk["name"],
+            "chunk_type": chunk["chunk_type"],
+            "code": chunk["code"],
+        })
 
-    # Sprint 1: return a deterministic answer composed from the top chunk.
-    # Sprint 4 will replace this with an LLM-generated answer that passes
-    # the structural citation-pairing check.
-    top = results[0]
-    answer = (
-        f"The most relevant code is in {top['file']} "
-        f"(lines {top['start_line']}-{top['end_line']}), "
-        f"in the {top['chunk_type']} `{top['name']}`."
-    )
+    # Ask the LLM to answer from the retrieved chunks. generate_answer returns
+    # None when the key is missing or the Groq call fails, in which case we
+    # fall back to the deterministic template answer.
+    answer = await llm_service.generate_answer(question, llm_chunks)
+    answer_source = "llm"
+    if answer is None:
+        answer_source = "fallback"
+        top = results[0]
+        answer = (
+            f"The most relevant code is in {top['file']} "
+            f"(lines {top['start_line']}-{top['end_line']}), "
+            f"in the {top['chunk_type']} `{top['name']}`."
+        )
 
     return {
         "question": question,
         "answer": answer,
+        "answer_source": answer_source,
         "citations": [
             {
                 "file": r["file"],

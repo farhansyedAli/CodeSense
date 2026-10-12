@@ -1,4 +1,6 @@
 venv/
+venv_jina/
+graphify-out/
 __pycache__/
 *.pyc
 .env

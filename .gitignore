@@ -4,3 +4,4 @@ __pycache__/
 .env
 data/repos/
 spike_output/
+data/indexes/

@@ -295,32 +295,46 @@ async function loadGraph() {
         cy = cytoscape({
             container: canvas,
             elements: [
-                ...data.nodes.map(n => ({
-                    data: {
-                        id: n.id,
-                        label: n.label,
-                        pr: Math.max(n.pagerank, 0.001),
-                        file: n.file,
-                    }
-                })),
+                ...data.nodes.map(n => {
+                    const parts = (n.file || n.id).split('/');
+                    const group = parts.length > 1 ? parts.slice(0, 2).join('/') : parts[0];
+                    return {
+                        data: {
+                            id: n.id,
+                            label: n.label,
+                            pr: Math.max(n.pagerank, 0.001),
+                            file: n.file,
+                            group: group,
+                        }
+                    };
+                }),
                 ...data.edges.map(e => ({
                     data: { source: e.source, target: e.target }
                 }))
             ],
             layout: {
-                name: 'cose',
+                name: 'fcose',
                 animate: false,
-                nodeRepulsion: 10000,
+                quality: 'default',
+                nodeRepulsion: 8000,
                 idealEdgeLength: 90,
+                gravity: 0.3,
+                gravityRange: 3.8,
                 padding: 30,
                 randomize: true,
+                nodeSeparation: 100,
             },
             style: [
                 {
                     selector: 'node',
                     style: {
-                        'background-color': '#1a1e26',
-                        'border-color': '#2e3545',
+                        'background-color': function(ele) {
+                            const g = ele.data('group') || 'x';
+                            let hash = 0;
+                            for (let i = 0; i < g.length; i++) hash = (hash * 31 + g.charCodeAt(i)) % 360;
+                            return `hsl(${hash}, 45%, 55%)`;
+                        },
+                        'border-color': '#0d1115',
                         'border-width': 1,
                         'label': 'data(label)',
                         'color': '#e6e8ec',
@@ -331,6 +345,7 @@ async function loadGraph() {
                         'text-outline-width': 2,
                         'width': 'mapData(pr, 0, 0.08, 24, 70)',
                         'height': 'mapData(pr, 0, 0.08, 24, 70)',
+                        'text-opacity': 'mapData(pr, 0, 0.02, 0, 1)',
                     }
                 },
                 {
@@ -346,22 +361,90 @@ async function loadGraph() {
                     }
                 },
                 {
-                    selector: 'node:selected',
+                    selector: '.faded',
                     style: {
-                        'background-color': '#4f8ef7',
-                        'border-color': '#7eb8f7',
+                        'opacity': 0.12,
+                    }
+                },
+                {
+                    selector: 'node.hover',
+                    style: {
+                        'text-opacity': 1,
+                        'border-color': '#4f8ef7',
                         'border-width': 2,
+                        'z-index': 999,
+                        'opacity': 1,
+                    }
+                },
+                {
+                    selector: 'edge.hover',
+                    style: {
+                        'line-color': '#4f8ef7',
+                        'target-arrow-color': '#4f8ef7',
+                        'opacity': 1,
+                        'width': 2,
+                    }
+                },
+                {
+                    selector: 'node.pinned',
+                    style: {
+                        'text-opacity': 1,
+                        'border-color': '#B45309',
+                        'border-width': 3,
+                        'z-index': 999,
+                        'opacity': 1,
+                    }
+                },
+                {
+                    selector: 'edge.pinned',
+                    style: {
+                        'line-color': '#B45309',
+                        'target-arrow-color': '#B45309',
+                        'opacity': 1,
+                        'width': 2,
                     }
                 }
             ]
         });
 
+        // Hover: temporary highlight
+        cy.on('mouseover', 'node', (evt) => {
+            if (cy.$('.pinned').length > 0) return;   // don't fight the pin
+            const node = evt.target;
+            const connected = node.closedNeighborhood();
+            cy.elements().addClass('faded');
+            connected.removeClass('faded').addClass('hover');
+            connected.connectedEdges().removeClass('faded').addClass('hover');
+        });
+        cy.on('mouseout', 'node', () => {
+            if (cy.$('.pinned').length > 0) return;
+            cy.elements().removeClass('faded hover');
+        });
+
+        // Click a node: pin highlight + open file
         cy.on('tap', 'node', (evt) => {
-            const file = evt.target.data('file');
+            const node = evt.target;
+            const connected = node.closedNeighborhood();
+            cy.elements().removeClass('pinned hover faded');
+            cy.elements().addClass('faded');
+            connected.removeClass('faded').addClass('pinned');
+            connected.connectedEdges().removeClass('faded').addClass('pinned');
+            const file = node.data('file');
             if (file && typeof showFile === 'function') {
                 showFile(file, 1);
             }
+            evt.stopPropagation();
         });
+
+        // Click empty space: clear pin
+        cy.on('tap', (evt) => {
+            if (evt.target === cy) {
+                cy.elements().removeClass('pinned hover faded');
+            }
+        });
+
+        // Fit to viewport
+        cy.fit(cy.elements(), 40);
 
     } catch (e) {
         canvas.innerHTML = `<div style="padding:40px;color:#f66;text-align:center">Error: ${e.message}</div>`;

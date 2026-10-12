@@ -9,6 +9,7 @@ function switchTab(name) {
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById('panel-' + name).classList.add('active');
     document.getElementById('tab-' + name).classList.add('active');
+    if (name === 'arch') loadGraph();
 }
 
 // Show file in right panel
@@ -242,5 +243,127 @@ async function connectRepository() {
     } finally {
         btn.textContent = "↻ Re-index";
         btn.disabled = false;
+    }
+}
+// ===== GRAPH VISUALIZATION =====
+let cy = null;
+let currentGraphLevel = 'module';
+
+function setGraphLevel(level) {
+    currentGraphLevel = level;
+    document.querySelectorAll('#arch-level-module, #arch-level-package, #arch-level-function')
+        .forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById(`arch-level-${level}`);
+    if (btn) btn.classList.add('active');
+    loadGraph();
+}
+
+async function loadGraph() {
+    const canvas = document.getElementById('graph-canvas');
+    const stats = document.getElementById('arch-stats');
+    if (!canvas) return;
+
+    if (!currentRepoId) {
+        canvas.innerHTML = '<div style="padding:40px;color:#888;text-align:center">Select a repository from the sidebar first.</div>';
+        if (stats) stats.textContent = '';
+        return;
+    }
+
+    canvas.innerHTML = '<div style="padding:40px;color:#888;text-align:center">Loading graph…</div>';
+    if (stats) stats.textContent = '';
+
+    try {
+        const res = await fetch(`${API_BASE}/api/graph/${currentRepoId}?level=${currentGraphLevel}`);
+        if (!res.ok) {
+            canvas.innerHTML = '<div style="padding:40px;color:#f66;text-align:center">Graph not found. Make sure the repo finished indexing.</div>';
+            return;
+        }
+        const data = await res.json();
+
+        if (data.nodes.length === 0) {
+            canvas.innerHTML = '<div style="padding:40px;color:#888;text-align:center">Graph is empty for this level.</div>';
+            return;
+        }
+
+        if (stats) {
+            stats.textContent = `${data.nodes.length} nodes · ${data.edges.length} edges`;
+        }
+
+        canvas.innerHTML = '';
+        if (cy) { try { cy.destroy(); } catch(e){} cy = null; }
+
+        cy = cytoscape({
+            container: canvas,
+            elements: [
+                ...data.nodes.map(n => ({
+                    data: {
+                        id: n.id,
+                        label: n.label,
+                        pr: Math.max(n.pagerank, 0.001),
+                        file: n.file,
+                    }
+                })),
+                ...data.edges.map(e => ({
+                    data: { source: e.source, target: e.target }
+                }))
+            ],
+            layout: {
+                name: 'cose',
+                animate: false,
+                nodeRepulsion: 10000,
+                idealEdgeLength: 90,
+                padding: 30,
+                randomize: true,
+            },
+            style: [
+                {
+                    selector: 'node',
+                    style: {
+                        'background-color': '#1a1e26',
+                        'border-color': '#2e3545',
+                        'border-width': 1,
+                        'label': 'data(label)',
+                        'color': '#e6e8ec',
+                        'font-size': '10px',
+                        'text-valign': 'center',
+                        'text-halign': 'center',
+                        'text-outline-color': '#0d1115',
+                        'text-outline-width': 2,
+                        'width': 'mapData(pr, 0, 0.08, 24, 70)',
+                        'height': 'mapData(pr, 0, 0.08, 24, 70)',
+                    }
+                },
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 1,
+                        'line-color': '#2e3545',
+                        'target-arrow-color': '#2e3545',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier',
+                        'opacity': 0.5,
+                        'arrow-scale': 0.8,
+                    }
+                },
+                {
+                    selector: 'node:selected',
+                    style: {
+                        'background-color': '#4f8ef7',
+                        'border-color': '#7eb8f7',
+                        'border-width': 2,
+                    }
+                }
+            ]
+        });
+
+        cy.on('tap', 'node', (evt) => {
+            const file = evt.target.data('file');
+            if (file && typeof showFile === 'function') {
+                showFile(file, 1);
+            }
+        });
+
+    } catch (e) {
+        canvas.innerHTML = `<div style="padding:40px;color:#f66;text-align:center">Error: ${e.message}</div>`;
     }
 }

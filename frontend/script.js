@@ -9,6 +9,7 @@ function switchTab(name) {
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById('panel-' + name).classList.add('active');
     document.getElementById('tab-' + name).classList.add('active');
+    if (name === 'arch') loadGraph();
 }
 
 // Show file in right panel
@@ -242,5 +243,210 @@ async function connectRepository() {
     } finally {
         btn.textContent = "↻ Re-index";
         btn.disabled = false;
+    }
+}
+// ===== GRAPH VISUALIZATION =====
+let cy = null;
+let currentGraphLevel = 'module';
+
+function setGraphLevel(level) {
+    currentGraphLevel = level;
+    document.querySelectorAll('#arch-level-module, #arch-level-package, #arch-level-function')
+        .forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById(`arch-level-${level}`);
+    if (btn) btn.classList.add('active');
+    loadGraph();
+}
+
+async function loadGraph() {
+    const canvas = document.getElementById('graph-canvas');
+    const stats = document.getElementById('arch-stats');
+    if (!canvas) return;
+
+    if (!currentRepoId) {
+        canvas.innerHTML = '<div style="padding:40px;color:#888;text-align:center">Select a repository from the sidebar first.</div>';
+        if (stats) stats.textContent = '';
+        return;
+    }
+
+    canvas.innerHTML = '<div style="padding:40px;color:#888;text-align:center">Loading graph…</div>';
+    if (stats) stats.textContent = '';
+
+    try {
+        const res = await fetch(`${API_BASE}/api/graph/${currentRepoId}?level=${currentGraphLevel}`);
+        if (!res.ok) {
+            canvas.innerHTML = '<div style="padding:40px;color:#f66;text-align:center">Graph not found. Make sure the repo finished indexing.</div>';
+            return;
+        }
+        const data = await res.json();
+
+        if (data.nodes.length === 0) {
+            canvas.innerHTML = '<div style="padding:40px;color:#888;text-align:center">Graph is empty for this level.</div>';
+            return;
+        }
+
+        if (stats) {
+            stats.textContent = `${data.nodes.length} nodes · ${data.edges.length} edges`;
+        }
+
+        canvas.innerHTML = '';
+        if (cy) { try { cy.destroy(); } catch(e){} cy = null; }
+
+        cy = cytoscape({
+            container: canvas,
+            elements: [
+                ...data.nodes.map(n => {
+                    const parts = (n.file || n.id).split('/');
+                    const group = parts.length > 1 ? parts.slice(0, 2).join('/') : parts[0];
+                    return {
+                        data: {
+                            id: n.id,
+                            label: n.label,
+                            pr: Math.max(n.pagerank, 0.001),
+                            file: n.file,
+                            group: group,
+                        }
+                    };
+                }),
+                ...data.edges.map(e => ({
+                    data: { source: e.source, target: e.target }
+                }))
+            ],
+            layout: {
+                name: 'fcose',
+                animate: false,
+                quality: 'default',
+                nodeRepulsion: 8000,
+                idealEdgeLength: 90,
+                gravity: 0.3,
+                gravityRange: 3.8,
+                padding: 30,
+                randomize: true,
+                nodeSeparation: 100,
+            },
+            style: [
+                {
+                    selector: 'node',
+                    style: {
+                        'background-color': function(ele) {
+                            const g = ele.data('group') || 'x';
+                            let hash = 0;
+                            for (let i = 0; i < g.length; i++) hash = (hash * 31 + g.charCodeAt(i)) % 360;
+                            return `hsl(${hash}, 45%, 55%)`;
+                        },
+                        'border-color': '#0d1115',
+                        'border-width': 1,
+                        'label': 'data(label)',
+                        'color': '#e6e8ec',
+                        'font-size': '10px',
+                        'text-valign': 'center',
+                        'text-halign': 'center',
+                        'text-outline-color': '#0d1115',
+                        'text-outline-width': 2,
+                        'width': 'mapData(pr, 0, 0.08, 24, 70)',
+                        'height': 'mapData(pr, 0, 0.08, 24, 70)',
+                        'text-opacity': 'mapData(pr, 0, 0.02, 0, 1)',
+                    }
+                },
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 1,
+                        'line-color': '#2e3545',
+                        'target-arrow-color': '#2e3545',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier',
+                        'opacity': 0.5,
+                        'arrow-scale': 0.8,
+                    }
+                },
+                {
+                    selector: '.faded',
+                    style: {
+                        'opacity': 0.12,
+                    }
+                },
+                {
+                    selector: 'node.hover',
+                    style: {
+                        'text-opacity': 1,
+                        'border-color': '#4f8ef7',
+                        'border-width': 2,
+                        'z-index': 999,
+                        'opacity': 1,
+                    }
+                },
+                {
+                    selector: 'edge.hover',
+                    style: {
+                        'line-color': '#4f8ef7',
+                        'target-arrow-color': '#4f8ef7',
+                        'opacity': 1,
+                        'width': 2,
+                    }
+                },
+                {
+                    selector: 'node.pinned',
+                    style: {
+                        'text-opacity': 1,
+                        'border-color': '#B45309',
+                        'border-width': 3,
+                        'z-index': 999,
+                        'opacity': 1,
+                    }
+                },
+                {
+                    selector: 'edge.pinned',
+                    style: {
+                        'line-color': '#B45309',
+                        'target-arrow-color': '#B45309',
+                        'opacity': 1,
+                        'width': 2,
+                    }
+                }
+            ]
+        });
+
+        // Hover: temporary highlight
+        cy.on('mouseover', 'node', (evt) => {
+            if (cy.$('.pinned').length > 0) return;   // don't fight the pin
+            const node = evt.target;
+            const connected = node.closedNeighborhood();
+            cy.elements().addClass('faded');
+            connected.removeClass('faded').addClass('hover');
+            connected.connectedEdges().removeClass('faded').addClass('hover');
+        });
+        cy.on('mouseout', 'node', () => {
+            if (cy.$('.pinned').length > 0) return;
+            cy.elements().removeClass('faded hover');
+        });
+
+        // Click a node: pin highlight + open file
+        cy.on('tap', 'node', (evt) => {
+            const node = evt.target;
+            const connected = node.closedNeighborhood();
+            cy.elements().removeClass('pinned hover faded');
+            cy.elements().addClass('faded');
+            connected.removeClass('faded').addClass('pinned');
+            connected.connectedEdges().removeClass('faded').addClass('pinned');
+            const file = node.data('file');
+            if (file && typeof showFile === 'function') {
+                showFile(file, 1);
+            }
+            evt.stopPropagation();
+        });
+
+        // Click empty space: clear pin
+        cy.on('tap', (evt) => {
+            if (evt.target === cy) {
+                cy.elements().removeClass('pinned hover faded');
+            }
+        });
+
+        // Fit to viewport
+        cy.fit(cy.elements(), 40);
+
+    } catch (e) {
+        canvas.innerHTML = `<div style="padding:40px;color:#f66;text-align:center">Error: ${e.message}</div>`;
     }
 }

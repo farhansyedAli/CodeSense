@@ -646,3 +646,16 @@ cursor: pointer;
 .shell { grid-template-columns: 1fr; }
 .sidebar, .right-panel { display: none; }
 }
+/* LLM answer formatting (markdown rendered by renderMarkdown in script.js) */
+.msg-text code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: rgba(79,142,247,0.1);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: var(--accent2);
+}
+.msg-text ul, .msg-text ol { margin: 0 0 8px 20px; }
+.msg-text li { margin-bottom: 4px; }
+.msg-text strong { color: #fff; font-weight: 600; }

@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "note": "Hand-labeled retrieval evaluation set. Each entry maps a natural-language question to the file + line ranges that count as a correct answer. A retrieved chunk matches when it is in the same file and its line range overlaps any gold entry.",
+  "queries": []
+}

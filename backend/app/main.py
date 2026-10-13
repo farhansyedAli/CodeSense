@@ -12,6 +12,7 @@ from app.models import Repository
 from app.routers import health, repositories, query, file, langgraph_test
 
 from app.routers import graph
+from app.routers import security
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -48,6 +49,7 @@ def create_app() -> FastAPI:
     app.include_router(langgraph_test.router)
     app.include_router(file.router, prefix="/api")
     app.include_router(graph.router, prefix="/api")
+    app.include_router(security.router, prefix="/api")
 
     # Serve the existing HTML/CSS frontend (Sprint 0 only)
     # Path: Sprint 1/frontend/  (sibling of backend/)

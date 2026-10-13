@@ -110,79 +110,14 @@ async function sendMessage() {
 // Supports: fenced code blocks, `inline code`, **bold**, bullet/numbered lists,
 // and # headings (shown as bold). All text is HTML-escaped before any tags are
 // added, so model output can never inject HTML or scripts.
+
 function renderMarkdown(text) {
-    const codeBlocks = [];
-    const inlineCodes = [];
-
-    // 1. Pull out fenced code blocks so their content is left untouched.
-    let src = String(text || "").replace(/\u0000/g, "").replace(/```[a-zA-Z0-9_+-]*[ \t]*\n?([\s\S]*?)```/g, (_, code) => {
-        codeBlocks.push(code.replace(/\n$/, ""));
-        return `\n\u0000CODEBLOCK${codeBlocks.length - 1}\u0000\n`;
+    return marked.parse(String(text || ""), {
+        breaks: true,
+        gfm: true,
+        headerIds: false,
+        mangle: false,
     });
-
-    // 2. Escape everything else, then pull out inline code.
-    src = escHtml(src);
-    src = src.replace(/`([^`\n]+)`/g, (_, code) => {
-        inlineCodes.push(code); // already escaped
-        return `\u0000INLINE${inlineCodes.length - 1}\u0000`;
-    });
-
-    // 3. Bold.
-    src = src.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
-
-    // 4. Line-by-line: paragraphs, lists, headings, code blocks.
-    let html = "";
-    let listType = null;
-    let para = [];
-    const flushPara = () => {
-        if (para.length) {
-            html += `<p>${para.join("<br>")}</p>`;
-            para = [];
-        }
-    };
-    const closeList = () => {
-        if (listType) {
-            html += `</${listType}>`;
-            listType = null;
-        }
-    };
-
-    for (const line of src.split("\n")) {
-        const cb = line.match(/^\u0000CODEBLOCK(\d+)\u0000$/);
-        const ul = line.match(/^\s*[-*]\s+(.*)$/);
-        const ol = line.match(/^\s*\d+[.)]\s+(.*)$/);
-        const heading = line.match(/^#{1,6}\s+(.*)$/);
-
-        if (cb) {
-            flushPara();
-            closeList();
-            html += `<div class="code-block"><pre>${escHtml(codeBlocks[Number(cb[1])])}</pre></div>`;
-        } else if (ul || ol) {
-            flushPara();
-            const tag = ul ? "ul" : "ol";
-            if (listType !== tag) {
-                closeList();
-                html += `<${tag}>`;
-                listType = tag;
-            }
-            html += `<li>${(ul || ol)[1]}</li>`;
-        } else if (heading) {
-            flushPara();
-            closeList();
-            html += `<p><strong>${heading[1]}</strong></p>`;
-        } else if (line.trim() === "") {
-            flushPara();
-            closeList();
-        } else {
-            closeList();
-            para.push(line.trim());
-        }
-    }
-    flushPara();
-    closeList();
-
-    // 5. Put inline code back.
-    return html.replace(/\u0000INLINE(\d+)\u0000/g, (_, i) => `<code>${inlineCodes[Number(i)]}</code>`);
 }
 
 function renderAiMessage(answerText, citations) {
@@ -201,9 +136,9 @@ function renderAiMessage(answerText, citations) {
         <div class="msg-avatar ai">CS</div>
         <div class="msg-body">
         <div class="msg-role">CodeSense · ${citations.length} sources</div>
-        <div class="msg-text">
+        <div class="msg-text markdown-body">
             ${renderMarkdown(answerText)}
-            <p>${citationHtml}</p>
+            <div class="msg-citations">${citationHtml}</div>
         </div>
         </div>`;
     messages.insertBefore(aiMsg, typingMsg);

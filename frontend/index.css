@@ -647,15 +647,29 @@ cursor: pointer;
 .sidebar, .right-panel { display: none; }
 }
 /* LLM answer formatting (markdown rendered by renderMarkdown in script.js) */
-.msg-text code {
-    font-family: var(--mono);
+
+.markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
     font-size: 12px;
-    background: rgba(79,142,247,0.1);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 1px 5px;
-    color: var(--accent2);
 }
-.msg-text ul, .msg-text ol { margin: 0 0 8px 20px; }
-.msg-text li { margin-bottom: 4px; }
-.msg-text strong { color: #fff; font-weight: 600; }
+.markdown-body th,
+.markdown-body td {
+    border: 1px solid var(--border);
+    padding: 6px 10px;
+    text-align: left;
+    vertical-align: top;
+}
+.markdown-body th {
+    background: var(--card);
+    font-weight: 600;
+    color: var(--text);
+}
+.markdown-body td {
+    color: var(--text2);
+}
+.markdown-body .msg-citations,
+.markdown-body .msg-citations a {
+    /* ensure citations still display inline */
+}

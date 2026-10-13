@@ -202,17 +202,18 @@ When the user types a question, the following happens:
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                             QUERY FLOW                                      │
 │                                                                             │
-│   User Question ──► Embed ──► Cosine Similarity ──► Top-3 ──► Answer        │
-│                                                              + Citations    │
+│   Question ──► Embed ──► Cosine Similarity ──► Top-5 ──► Groq LLM           │
+│                                                    ──► Answer + Citations   │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 1. The question is converted into a vector using the same embedding model.
 2. Cosine similarity is computed between the question vector and every chunk vector in the index.
-3. The top 3 chunks are selected.
-4. The answer is generated (in Sprint 1, from a template that names the top chunk).
-5. The response includes the answer text and a list of citations with file paths and line ranges.
+3. The top 5 chunks are selected (configurable with `LLM_TOP_K`).
+4. The question and the full code of those chunks are sent to a Groq LLM, which writes a Markdown-formatted answer grounded in the chunks and cites file paths and line ranges.
+5. If the LLM is unavailable (no `GROQ_API_KEY`, network error, or Groq error), the endpoint falls back to a template answer that names the top chunk. The response field `answer_source` is `"llm"` or `"fallback"`.
+6. The response includes the answer text and a list of citations with file paths and line ranges.
 
 ### What Happens When You Click a Citation
 
@@ -283,12 +284,16 @@ Create `backend/.env` with the following contents:
 ```env
 DEBUG=true
 DATABASE_URL=postgresql+asyncpg://postgres:YOUR_PASSWORD@localhost:5432/codesense_dev
-GROQ_API_KEY=
+GROQ_API_KEY=your_groq_api_key
+# Optional (default shown):
+# GROQ_MODEL=openai/gpt-oss-120b
 ```
 
 Replace `YOUR_PASSWORD` with the password you set during PostgreSQL installation.
 
-The `GROQ_API_KEY` can be left empty for Sprint 1 — the pipeline does not use an LLM yet.
+`GROQ_API_KEY` is used to generate answers with an LLM. Create a key in the Groq console and keep it only in your local `.env` (the file is gitignored; never commit it). If the key is empty, `/api/query` still works but returns the template fallback answer.
+
+`GROQ_MODEL` defaults to `openai/gpt-oss-120b`. Groq retires models from time to time, so if answers suddenly fall back, check Groq's deprecation page and set `GROQ_MODEL` to a supported model.
 
 ---
 
@@ -400,7 +405,8 @@ Expected response:
 ```json
 {
   "question": "How are URL routes registered?",
-  "answer": "The most relevant code is in src/flask/sansio/scaffold.py (lines 344-373), in the func `route`.",
+  "answer": "<Markdown answer written by the LLM, citing file paths and line ranges>",
+  "answer_source": "llm",
   "citations": [
     {"file":"src/flask/sansio/scaffold.py","start_line":344,"end_line":373,"name":"route","score":0.57},
     ...
@@ -495,7 +501,8 @@ All endpoints are served by FastAPI. Interactive documentation is available at `
 // Response (200 OK)
 {
   "question": "How are URL routes registered?",
-  "answer": "The most relevant code is in ...",
+  "answer": "<LLM answer; template text if answer_source is fallback>",
+  "answer_source": "llm",
   "citations": [
     { "file": "...", "start_line": 344, "end_line": 373, "name": "route", "score": 0.57 }
   ],
@@ -534,12 +541,13 @@ GET /api/file?repo_id=<uuid>&path=src/flask/app.py&start=344&end=373
 - Persisting chunks, embeddings, and the graph to disk
 - Semantic retrieval over the indexed chunks
 - Answers with clickable citations
+- LLM-generated, formatted answers grounded in the retrieved chunks (with a template fallback)
 - Citation preview that opens the source file at the exact line range
 - Listing all connected repositories
 
 ### ⚠️ Working but Limited
 
-- **Answer generation** is a template string. It names the top chunk but does not synthesize an explanation. Sprint 4 replaces this with an LLM.
+- **Answer generation** uses a Groq LLM over the top 5 retrieved chunks, so an answer is only as good as retrieval: if the right code is not in those chunks, the answer will be incomplete or say so. Citations are not yet verified automatically (the citation-pairing check is planned for Sprint 4).
 - **The graph** uses identifier matching, not real call resolution. It is directionally useful but not precise. Sprint 5 upgrades it.
 - **The embedding model** is `all-MiniLM-L6-v2` (general-purpose). It works but is not tuned for code. Sprint 2 replaces it.
 - **Storage** is files on disk. Sprint 2 moves it to PostgreSQL + pgvector.

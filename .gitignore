@@ -5,3 +5,6 @@ __pycache__/
 data/repos/
 spike_output/
 data/indexes/
+venv_jina/
+graphify-out/
+docs/

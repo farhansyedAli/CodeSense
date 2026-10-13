@@ -106,6 +106,20 @@ async function sendMessage() {
     }
 }
 
+// Minimal, safe Markdown renderer for LLM answers.
+// Supports: fenced code blocks, `inline code`, **bold**, bullet/numbered lists,
+// and # headings (shown as bold). All text is HTML-escaped before any tags are
+// added, so model output can never inject HTML or scripts.
+
+function renderMarkdown(text) {
+    return marked.parse(String(text || ""), {
+        breaks: true,
+        gfm: true,
+        headerIds: false,
+        mangle: false,
+    });
+}
+
 function renderAiMessage(answerText, citations) {
     const messages = document.getElementById("messages");
     const typingMsg = document.getElementById("typing-msg");
@@ -122,9 +136,9 @@ function renderAiMessage(answerText, citations) {
         <div class="msg-avatar ai">CS</div>
         <div class="msg-body">
         <div class="msg-role">CodeSense · ${citations.length} sources</div>
-        <div class="msg-text">
-            <p>${escHtml(answerText)}</p>
-            <p>${citationHtml}</p>
+        <div class="msg-text markdown-body">
+            ${renderMarkdown(answerText)}
+            <div class="msg-citations">${citationHtml}</div>
         </div>
         </div>`;
     messages.insertBefore(aiMsg, typingMsg);

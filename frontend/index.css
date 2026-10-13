@@ -646,3 +646,30 @@ cursor: pointer;
 .shell { grid-template-columns: 1fr; }
 .sidebar, .right-panel { display: none; }
 }
+/* LLM answer formatting (markdown rendered by renderMarkdown in script.js) */
+
+.markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 12px;
+}
+.markdown-body th,
+.markdown-body td {
+    border: 1px solid var(--border);
+    padding: 6px 10px;
+    text-align: left;
+    vertical-align: top;
+}
+.markdown-body th {
+    background: var(--card);
+    font-weight: 600;
+    color: var(--text);
+}
+.markdown-body td {
+    color: var(--text2);
+}
+.markdown-body .msg-citations,
+.markdown-body .msg-citations a {
+    /* ensure citations still display inline */
+}

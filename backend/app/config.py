@@ -23,7 +23,15 @@ class Settings(BaseSettings):
     allowed_methods: list[str] = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     allowed_headers: list[str] = ["Authorization", "Content-Type"]
 
-    # LLM
+    # LLM (Groq)
     groq_api_key: str = ""
+    # Override in .env with GROQ_MODEL=... when Groq retires a model.
+    groq_model: str = "openai/gpt-oss-120b"
+    llm_temperature: float = 0.1
+    llm_max_tokens: int = 4096
+    llm_timeout_seconds: int = 45
+    # How many retrieved chunks are sent to the LLM, and how much of each.
+    llm_top_k: int = 5
+    llm_max_chunk_chars: int = 2000
 
 settings = Settings()

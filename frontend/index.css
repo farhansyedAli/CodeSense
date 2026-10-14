@@ -673,3 +673,307 @@ cursor: pointer;
 .markdown-body .msg-citations a {
     /* ensure citations still display inline */
 }
+
+/* ── Dependency vulnerability scan (Security tab) ── */
+.sec-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.sec-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.sec-sub {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    max-width: 560px;
+}
+
+.sec-scan-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 14px;
+    font-size: 12px;
+    font-family: var(--sans);
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.sec-scan-btn:hover {
+    filter: brightness(1.1);
+}
+
+.sec-scan-btn:disabled {
+    opacity: 0.55;
+    cursor: default;
+    filter: none;
+}
+
+.sec-status {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 12px;
+}
+
+#sec-summary {
+    grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+}
+
+#sec-summary:empty {
+    display: none;
+}
+
+.sec-stat.s-critical .sec-stat-num {
+    color: #ff5d7a;
+}
+
+.sec-stat.s-high .sec-stat-num {
+    color: var(--red);
+}
+
+.sec-stat.s-medium .sec-stat-num {
+    color: var(--amber);
+}
+
+.sec-stat.s-low .sec-stat-num {
+    color: var(--accent2);
+}
+
+.sec-stat.s-unknown .sec-stat-num {
+    color: var(--muted);
+}
+
+.sev-badge.critical {
+    background: rgba(255, 93, 122, 0.18);
+    color: #ff7b93;
+    border: 1px solid rgba(255, 93, 122, 0.4);
+}
+
+.sev-badge.unknown {
+    background: rgba(125, 143, 168, 0.12);
+    color: var(--muted);
+    border: 1px solid rgba(125, 143, 168, 0.25);
+}
+
+.sec-note {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    line-height: 1.6;
+}
+
+.sec-note code,
+.sec-table code,
+.sec-list-row code {
+    font-family: var(--mono);
+    font-size: 11px;
+}
+
+.sec-note em {
+    color: var(--text);
+    font-style: normal;
+}
+
+.sec-note code+code {
+    margin-left: 6px;
+}
+
+#sec-notices:not(:empty) {
+    margin-bottom: 12px;
+}
+
+.sec-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    margin-bottom: 14px;
+}
+
+.sec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.sec-table th {
+    text-align: left;
+    padding: 8px 10px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+.sec-table td {
+    padding: 9px 10px;
+    vertical-align: top;
+}
+
+.sec-table tbody.sec-pkg+tbody.sec-pkg {
+    border-top: 1px solid var(--border);
+}
+
+.sec-pkg-name {
+    font-weight: 500;
+    word-break: break-word;
+}
+
+.sec-muted {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.sec-tag {
+    display: inline-block;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 0 5px;
+    font-size: 10px;
+    color: var(--muted);
+    font-family: var(--mono);
+}
+
+.sec-inferred {
+    display: inline-block;
+    background: rgba(245, 166, 35, 0.12);
+    color: var(--amber);
+    border-radius: 4px;
+    padding: 0 5px;
+    font-size: 10px;
+    cursor: help;
+}
+
+.sec-vuln-id {
+    color: var(--accent2);
+    font-family: var(--mono);
+    font-size: 11px;
+    text-decoration: none;
+}
+
+.sec-vuln-id:hover {
+    text-decoration: underline;
+}
+
+.sec-cve {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-left: 4px;
+}
+
+.sec-vuln-text {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.5;
+    margin-top: 3px;
+    max-width: 420px;
+}
+
+.sec-score {
+    font-family: var(--mono);
+    white-space: nowrap;
+}
+
+.sec-empty {
+    padding: 32px 12px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.sec-error {
+    background: rgba(240, 96, 96, 0.08);
+    border: 1px solid rgba(240, 96, 96, 0.3);
+    color: var(--red);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.sec-clean-banner {
+    background: rgba(61, 214, 140, 0.08);
+    border: 1px solid rgba(61, 214, 140, 0.25);
+    color: var(--green);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 12px;
+    margin-bottom: 14px;
+}
+
+.sec-more {
+    margin-bottom: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.sec-more summary {
+    cursor: pointer;
+    padding: 9px 12px;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.sec-more[open] summary {
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+}
+
+.sec-more-body {
+    padding: 10px 12px;
+}
+
+.sec-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.sec-chip {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-family: var(--mono);
+}
+
+.sec-chip em {
+    color: var(--muted);
+    font-style: normal;
+    margin-left: 6px;
+}
+
+.sec-list-row {
+    font-size: 11px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+}
+
+.sec-list-row:last-child {
+    border-bottom: none;
+}
+
+@media (max-width: 700px) {
+    .sec-head {
+        flex-direction: column;
+    }
+}

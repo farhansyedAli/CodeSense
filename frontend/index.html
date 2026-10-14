@@ -96,7 +96,7 @@
     <div class="tabs">
       <div class="tab active" id="tab-qa" onclick="switchTab('qa')">Q&A</div>
       <div class="tab" id="tab-arch" onclick="switchTab('arch')">Architecture</div>
-      <div class="tab" id="tab-sec" onclick="switchTab('sec')">Security <span class="tab-count">3</span></div>
+      <div class="tab" id="tab-sec" onclick="switchTab('sec')">Security <span class="tab-count" id="sec-tab-count" style="display:none"></span></div>
       <div class="tab" id="tab-impact" onclick="switchTab('impact')">Impact analysis</div>
     </div>
 
@@ -238,81 +238,19 @@
     <!-- SECURITY PANEL -->
     <div class="tab-panel" id="panel-sec">
       <div class="sec-panel">
-        <div class="sec-summary">
-          <div class="sec-stat critical">
-            <div class="sec-stat-num">1</div>
-            <div class="sec-stat-label">High</div>
+        <div class="sec-head">
+          <div>
+            <div class="sec-title">Dependency vulnerabilities</div>
+            <div class="sec-sub">Checks the packages declared in requirements.txt and package.json against OSV.dev. Source code is not scanned.</div>
           </div>
-          <div class="sec-stat warning">
-            <div class="sec-stat-num">2</div>
-            <div class="sec-stat-label">Medium</div>
-          </div>
-          <div class="sec-stat info">
-            <div class="sec-stat-num">4</div>
-            <div class="sec-stat-label">Low</div>
-          </div>
-          <div class="sec-stat passed">
-            <div class="sec-stat-num">31</div>
-            <div class="sec-stat-label">Filtered out</div>
-          </div>
+          <button class="sec-scan-btn" id="sec-scan-btn" onclick="runSecurityScan()">Scan dependencies</button>
         </div>
-
-        <div style="font-size:12px;color:var(--muted);margin-bottom:14px">
-          Showing only findings <strong style="color:var(--text)">reachable from a public entry point</strong>. 31 findings were filtered out because they exist in unreachable code paths.
+        <div class="sec-status" id="sec-status"></div>
+        <div class="sec-summary" id="sec-summary"></div>
+        <div id="sec-notices"></div>
+        <div id="sec-results">
+          <div class="sec-empty">Select a repository from the sidebar, then open this tab to scan its dependencies.</div>
         </div>
-
-        <!-- Finding 1 -->
-        <div class="finding open" onclick="toggleFinding(this)">
-          <div class="finding-header">
-            <span class="sev-badge high">High</span>
-            <span class="finding-title">Raw SQL via .extra() — potential SQL injection</span>
-            <span class="finding-reach reachable">⚠ Reachable</span>
-          </div>
-          <div class="finding-body">
-            <div class="finding-desc">The <code style="font-family:var(--mono);font-size:11px">.extra(where=...)</code> method on QuerySet accepts raw SQL strings. If user-controlled input is passed here without parameterization, a SQL injection attack is possible. This code path is reachable from <code style="font-family:var(--mono);font-size:11px">views/generic/list.py</code> via the <code style="font-family:var(--mono);font-size:11px">get_queryset()</code> chain.</div>
-            <div class="finding-loc">
-              <span>📄</span>
-              <a class="cite" onclick="showFile('django/db/models/query.py', 891)">django/db/models/query.py · line 891</a>
-            </div>
-            <div class="code-block">
-              <div class="code-block-header">
-                <span class="code-block-file">query.py · line 891</span>
-              </div>
-              <pre><span class="kw">def</span> <span class="fn">extra</span>(self, select=<span class="kw">None</span>, where=<span class="kw">None</span>, ...):
-    <span class="cm"># where accepts raw SQL strings — injection risk</span>
-    clone = self._chain()
-    clone.query.add_extra(select, select_params, where, ...)</pre>
-            </div>
-            <div style="font-size:12px;color:var(--muted)"><strong style="color:var(--green)">Fix:</strong> Replace <code style="font-family:var(--mono);font-size:11px">.extra()</code> with <code style="font-family:var(--mono);font-size:11px">.raw()</code> using parameterized queries, or use <code style="font-family:var(--mono);font-size:11px">RawSQL()</code> with explicit params.</div>
-          </div>
-        </div>
-
-        <!-- Finding 2 -->
-        <div class="finding" onclick="toggleFinding(this)">
-          <div class="finding-header">
-            <span class="sev-badge medium">Medium</span>
-            <span class="finding-title">Hard-coded SECRET_KEY in test settings</span>
-            <span class="finding-reach reachable">⚠ Reachable</span>
-          </div>
-          <div class="finding-body">
-            <div class="finding-desc">A default SECRET_KEY value is hard-coded in test configuration. If test settings are accidentally used in production, session tokens and CSRF tokens become predictable.</div>
-            <div class="finding-loc"><span>📄</span><a class="cite">django/conf/global_settings.py · line 22</a></div>
-          </div>
-        </div>
-
-        <!-- Finding 3 -->
-        <div class="finding" onclick="toggleFinding(this)">
-          <div class="finding-header">
-            <span class="sev-badge medium">Medium</span>
-            <span class="finding-title">Missing input length validation — CharField</span>
-            <span class="finding-reach unreachable">✓ Unreachable in core</span>
-          </div>
-          <div class="finding-body">
-            <div class="finding-desc">Several CharField definitions in contrib apps do not enforce max_length at the model level. This is mitigated by form validation, but direct model saves bypass this guard.</div>
-            <div class="finding-loc"><span>📄</span><a class="cite">django/contrib/flatpages/models.py · line 14</a></div>
-          </div>
-        </div>
-
       </div>
     </div>
 

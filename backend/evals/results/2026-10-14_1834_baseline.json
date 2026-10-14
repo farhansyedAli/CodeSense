@@ -1,0 +1,77 @@
+{
+  "ran_at": "2026-10-14T18:34:38.369876",
+  "config": "baseline (Sprint 1 pipeline)",
+  "n_queries": 8,
+  "metrics": {
+    "recall_at_1": 0.25,
+    "recall_at_3": 0.5,
+    "mrr": 0.3541666666666667,
+    "latency_p50_ms": 2678
+  },
+  "per_query": [
+    {
+      "id": "flask-001",
+      "intent": "definition_lookup",
+      "rank": 3,
+      "hit_at_1": 0,
+      "hit_at_3": 1,
+      "latency_ms": 4247
+    },
+    {
+      "id": "flask-002",
+      "intent": "code_flow",
+      "rank": 1,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "latency_ms": 28926
+    },
+    {
+      "id": "flask-003",
+      "intent": "code_flow",
+      "rank": 1,
+      "hit_at_1": 1,
+      "hit_at_3": 1,
+      "latency_ms": 2273
+    },
+    {
+      "id": "flask-004",
+      "intent": "concept",
+      "rank": null,
+      "hit_at_1": 0,
+      "hit_at_3": 0,
+      "latency_ms": 2662
+    },
+    {
+      "id": "codesense-001",
+      "intent": "definition_lookup",
+      "rank": null,
+      "hit_at_1": 0,
+      "hit_at_3": 0,
+      "latency_ms": 1562
+    },
+    {
+      "id": "codesense-002",
+      "intent": "code_flow",
+      "rank": null,
+      "hit_at_1": 0,
+      "hit_at_3": 0,
+      "latency_ms": 9982
+    },
+    {
+      "id": "codesense-003",
+      "intent": "code_flow",
+      "rank": 2,
+      "hit_at_1": 0,
+      "hit_at_3": 1,
+      "latency_ms": 2678
+    },
+    {
+      "id": "codesense-004",
+      "intent": "definition_lookup",
+      "rank": null,
+      "hit_at_1": 0,
+      "hit_at_3": 0,
+      "latency_ms": 1580
+    }
+  ]
+}

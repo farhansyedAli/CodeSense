@@ -1,5 +1,80 @@
 {
   "version": 1,
-  "note": "Hand-labeled retrieval evaluation set. Each entry maps a natural-language question to the file + line ranges that count as a correct answer. A retrieved chunk matches when it is in the same file and its line range overlaps any gold entry.",
-  "queries": []
+  "note": "Hand-labeled retrieval evaluation set. A retrieved chunk matches when the file matches and its line range overlaps any gold entry.",
+  "queries": [
+    {
+      "id": "flask-001",
+      "repo_id": "fa1df9ec-61f6-4497-ab7d-184bbc30aee5",
+      "question": "Where is the Flask application class defined?",
+      "gold": [
+        {"file": "src/flask/app.py", "start_line": 1, "end_line": 1500}
+      ],
+      "intent": "definition_lookup"
+    },
+    {
+      "id": "flask-002",
+      "repo_id": "fa1df9ec-61f6-4497-ab7d-184bbc30aee5",
+      "question": "How are URL routes registered?",
+      "gold": [
+        {"file": "src/flask/sansio/scaffold.py", "start_line": 1, "end_line": 800},
+        {"file": "src/flask/sansio/app.py", "start_line": 1, "end_line": 800}
+      ],
+      "intent": "code_flow"
+    },
+    {
+      "id": "flask-003",
+      "repo_id": "fa1df9ec-61f6-4497-ab7d-184bbc30aee5",
+      "question": "Where is the request context pushed and popped?",
+      "gold": [
+        {"file": "src/flask/ctx.py", "start_line": 1, "end_line": 500}
+      ],
+      "intent": "code_flow"
+    },
+    {
+      "id": "flask-004",
+      "repo_id": "fa1df9ec-61f6-4497-ab7d-184bbc30aee5",
+      "question": "How does Flask handle errors and exceptions?",
+      "gold": [
+        {"file": "src/flask/app.py", "start_line": 1, "end_line": 1500},
+        {"file": "src/flask/sansio/app.py", "start_line": 1, "end_line": 800}
+      ],
+      "intent": "concept"
+    },
+    {
+      "id": "codesense-001",
+      "repo_id": "1a381623-9f01-48ed-b656-0431e6220d71",
+      "question": "Where is the indexing pipeline defined?",
+      "gold": [
+        {"file": "backend/indexing/pipeline.py", "start_line": 1, "end_line": 400}
+      ],
+      "intent": "definition_lookup"
+    },
+    {
+      "id": "codesense-002",
+      "repo_id": "1a381623-9f01-48ed-b656-0431e6220d71",
+      "question": "How does the system build the dependency graph?",
+      "gold": [
+        {"file": "backend/indexing/pipeline.py", "start_line": 150, "end_line": 300}
+      ],
+      "intent": "code_flow"
+    },
+    {
+      "id": "codesense-003",
+      "repo_id": "1a381623-9f01-48ed-b656-0431e6220d71",
+      "question": "Where is the FastAPI app created and routers registered?",
+      "gold": [
+        {"file": "backend/app/main.py", "start_line": 1, "end_line": 200}
+      ],
+      "intent": "code_flow"
+    },
+    {
+      "id": "codesense-004",
+      "repo_id": "1a381623-9f01-48ed-b656-0431e6220d71",
+      "question": "Where is the Repository database model defined?",
+      "gold": [
+        {"file": "backend/app/models/repository.py", "start_line": 1, "end_line": 100}
+      ],
+      "intent": "definition_lookup"
+    }
+  ]
 }

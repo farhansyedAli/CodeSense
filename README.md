@@ -30,6 +30,7 @@ Final Year Project · Department of Data Science · University of the Punjab
 11. [API Reference](#11-api-reference)
 12. [What Works and What Does Not](#12-what-works-and-what-does-not)
 13. [Troubleshooting](#13-troubleshooting)
+14. [Dependency Security Analysis](#14-dependency-security-analysis)
 
 ---
 
@@ -94,13 +95,21 @@ Sprint 1/
 │   │   │   ├── query.py            POST /api/query — the semantic search endpoint
 │   │   │   ├── file.py             GET /api/file — returns source lines for the
 │   │   │   │                       citation preview panel
+│   │   │   ├── security.py         POST /api/security/analyze — dependency
+│   │   │   │                       vulnerability scan
 │   │   │   └── langgraph_test.py   GET /langgraph-test — Sprint 0 smoke test
 │   │   │
 │   │   └── services/
-│   │       └── repository_service.py
-│   │                               Business logic: create a repo record,
-│   │                               run the indexing pipeline as a background
-│   │                               task, update progress in the DB
+│   │       ├── repository_service.py
+│   │       │                       Business logic: create a repo record,
+│   │       │                       run the indexing pipeline as a background
+│   │       │                       task, update progress in the DB
+│   │       ├── dependency_parser.py
+│   │       │                       Finds and parses requirements*.txt and
+│   │       │                       package.json (no network access)
+│   │       └── osv_service.py
+│   │                               Looks up vulnerabilities on OSV.dev and
+│   │                               computes CVSS scores and severity
 │   │
 │   ├── indexing/
 │   │   ├── __init__.py
@@ -295,6 +304,8 @@ Replace `YOUR_PASSWORD` with the password you set during PostgreSQL installation
 
 `GROQ_MODEL` defaults to `openai/gpt-oss-120b`. Groq retires models from time to time, so if answers suddenly fall back, check Groq's deprecation page and set `GROQ_MODEL` to a supported model.
 
+The **Security** tab needs no configuration and no API key. It queries the public [OSV.dev](https://osv.dev) database over HTTPS, so the backend machine needs outbound internet access. Only package names and versions are sent to OSV, never source code.
+
 ---
 
 ## 9. Running the Application
@@ -464,6 +475,27 @@ For `tiangolo/fastapi`:
 - *"Where is the request validation logic?"*
 - *"How are background tasks scheduled?"*
 
+### 10.7 Check Dependency Vulnerabilities
+
+1. Open `http://localhost:8000` and click an indexed repository in the sidebar.
+2. Open the **Security** tab. The scan starts automatically and takes a few seconds.
+3. Check the result:
+   - The summary cards show the number of vulnerabilities per severity.
+   - The table lists each vulnerable package with its version, advisory ID (click it to open the OSV page), severity, CVSS score, and the version that fixes it.
+   - Versions marked **inferred** come from a version range such as `^4.17.0` or `>=2.0`, not an exact pin.
+   - The collapsible lists show clean packages, packages that could not be checked, and skipped lines.
+4. Click **Re-scan** to run the check again.
+
+To call the endpoint directly:
+
+```bash
+curl -X POST http://localhost:8000/api/security/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"repo_id": "42dd7fd7-aecd-495a-aa6d-780217aca7df"}'
+```
+
+A repository with up-to-date dependencies usually reports no vulnerabilities. To see results in the table, index a project that pins older versions of popular packages.
+
 ---
 
 ## 11. API Reference
@@ -478,6 +510,7 @@ All endpoints are served by FastAPI. Interactive documentation is available at `
 | `GET`  | `/api/repositories/{repo_id}/status` | Get indexing status and progress            |
 | `POST` | `/api/query`                         | Ask a question about an indexed repository  |
 | `GET`  | `/api/file`                          | Fetch source lines for the citation preview |
+| `POST` | `/api/security/analyze`              | Scan dependencies for known vulnerabilities |
 | `GET`  | `/langgraph-test`                    | Sprint 0 LangGraph smoke test               |
 
 ### Request and Response Shapes
@@ -528,6 +561,71 @@ GET /api/file?repo_id=<uuid>&path=src/flask/app.py&start=344&end=373
 }
 ```
 
+**`POST /api/security/analyze`**
+
+Reads `requirements*.txt` and `package.json` (plus `package-lock.json` when present) from the cloned repository and checks every package against OSV.dev. Source code is never scanned.
+
+```json
+// Request
+{ "repo_id": "uuid" }
+
+// Response (200 OK, abbreviated)
+{
+  "repo_id": "uuid",
+  "status": "ok",
+  "message": null,
+  "source": "OSV.dev",
+  "scanned_at": "2026-10-14T10:30:00+00:00",
+  "manifests": ["backend/requirements.txt", "web/package.json"],
+  "truncated": false,
+  "summary": {
+    "packages_total": 18,
+    "packages_vulnerable": 1,
+    "packages_clean": 16,
+    "packages_unchecked": 1,
+    "vulnerabilities_total": 2,
+    "by_severity": { "Critical": 0, "High": 2, "Medium": 0, "Low": 0, "Unknown": 0 }
+  },
+  "by_ecosystem": { "PyPI": { "packages": 17, ... }, "npm": { "packages": 1, ... } },
+  "results": [
+    {
+      "ecosystem": "npm",
+      "name": "lodash",
+      "version": "4.17.15",
+      "declared": "^4.17.0",
+      "exact": true,
+      "source_files": ["web/package.json"],
+      "dev": false,
+      "note": "exact version taken from web/package-lock.json",
+      "status": "vulnerable",
+      "max_severity": "High",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-35jh-r3h4-6jhm",
+          "cve": "CVE-2021-23337",
+          "summary": "Command Injection in lodash",
+          "score": 7.2,
+          "severity": "High",
+          "fixed_version": "4.17.21",
+          "url": "https://osv.dev/vulnerability/GHSA-35jh-r3h4-6jhm"
+        }
+      ]
+    }
+  ],
+  "skipped": [
+    { "file": "backend/requirements.txt", "entry": "-r base.txt", "reason": "pip option or include, not a package" }
+  ]
+}
+```
+
+`status` is `"ok"` or `"no_dependencies"` (no dependency files found, or none readable; `message` explains which). Each result has a `status` of `vulnerable`, `clean`, or `unchecked`.
+
+| HTTP status | When                                                      |
+| :---------- | :-------------------------------------------------------- |
+| `400`     | `repo_id` is not a valid identifier                     |
+| `404`     | The repository files are not on disk (not indexed yet)    |
+| `503`     | OSV.dev could not be reached or timed out                 |
+
 ---
 
 ## 12. What Works and What Does Not
@@ -542,6 +640,7 @@ GET /api/file?repo_id=<uuid>&path=src/flask/app.py&start=344&end=373
 - Semantic retrieval over the indexed chunks
 - Answers with clickable citations
 - LLM-generated, formatted answers grounded in the retrieved chunks (with a template fallback)
+- Dependency vulnerability scan for `requirements.txt` and `package.json`: known CVEs, CVSS severity, and fix versions in the Security tab
 - Citation preview that opens the source file at the exact line range
 - Listing all connected repositories
 
@@ -552,6 +651,7 @@ GET /api/file?repo_id=<uuid>&path=src/flask/app.py&start=344&end=373
 - **The embedding model** is `all-MiniLM-L6-v2` (general-purpose). It works but is not tuned for code. Sprint 2 replaces it.
 - **Storage** is files on disk. Sprint 2 moves it to PostgreSQL + pgvector.
 - **No authentication.** Sprint 3 adds it.
+- **The dependency scan** checks declared versions only. When a file uses a range (`>=2.0`, `^4.17.0`) and there is no lockfile entry, the lowest allowed version is checked and marked *inferred*, which can over-report. Transitive dependencies are not scanned, only Python (`requirements*.txt`) and npm (`package.json`) are supported, and CVSS v4-only advisories show as *Unknown* severity. See [section 14](#14-dependency-security-analysis).
 
 ### ❌ Not in Sprint 1
 
@@ -560,7 +660,7 @@ GET /api/file?repo_id=<uuid>&path=src/flask/app.py&start=344&end=373
 - LLM-generated answers with the citation-pairing check
 - Impact analysis
 - Architecture diagram view
-- Security scan
+- Source-code security scan (static analysis of the code itself; dependency scanning is covered in [section 14](#14-dependency-security-analysis))
 - Role-based onboarding
 - Streaming responses
 - Repository deletion
@@ -608,6 +708,70 @@ rmdir /s "data\indexes\<repo_id>"
 ```
 
 Then connect it again from the UI.
+
+---
+
+## 14. Dependency Security Analysis
+
+The **Security** tab reports known vulnerabilities in a repository's third-party packages. It looks only at the dependencies a repository declares. It does not scan source code.
+
+### 14.1 How It Works
+
+```
+Cloned repository (data/repos/<repo_id>)
+        │
+        ▼
+Find manifests ── requirements*.txt, package.json (+ package-lock.json)
+        │
+        ▼
+Parse ── package name, version, exact pin or range
+        │
+        ▼
+OSV.dev ── one batch query, then one lookup per advisory
+        │
+        ▼
+Score ── CVSS v3 base score → Critical / High / Medium / Low
+        │
+        ▼
+Security tab ── table, summary counts, fix versions
+```
+
+1. **Find manifests.** The repository is searched up to four folders deep for `requirements*.txt`, files inside a `requirements/` folder, and `package.json`. Folders such as `node_modules`, `venv` and `.git` are skipped, and at most 25 files are read.
+2. **Parse.** Python entries handle extras (`uvicorn[standard]`), environment markers, comments, hashes, and the `==`, `~=` and `>=` specifiers. npm entries cover `dependencies`, `devDependencies` and `optionalDependencies`. When a `package-lock.json` sits next to a `package.json`, its exact versions are used.
+3. **Look up.** All packages are sent to OSV.dev in one batch request. OSV returns advisory IDs, and each distinct advisory is then fetched for its description, severity and fixed versions. Advisory details are cached in memory for one hour.
+4. **Score.** OSV provides a CVSS vector string. The backend calculates the numeric base score (CVSS v3.0 and v3.1) and maps it to a severity band. Advisories without a v3 vector use the severity label GitHub supplies, or show as *Unknown*.
+5. **Merge.** The same flaw often appears under several IDs (`PYSEC-…`, `GHSA-…`, `CVE-…`). These are merged into one row, keeping the record with the best severity data.
+
+### 14.2 Severity Bands
+
+| Severity | CVSS score                                    |
+| :------- | :-------------------------------------------- |
+| Critical | 9.0 – 10.0                                    |
+| High     | 7.0 – 8.9                                     |
+| Medium   | 4.0 – 6.9                                     |
+| Low      | 0.1 – 3.9                                     |
+| Unknown  | No CVSS v3 score or severity label available  |
+
+### 14.3 How Versions Are Resolved
+
+| Declared in the file                           | Version checked                  | Shown as                   |
+| :--------------------------------------------- | :------------------------------- | :------------------------- |
+| `requests==2.19.0`                           | `2.19.0`                       | exact                      |
+| `django>=2.2`                                | `2.2` (lowest allowed)         | *inferred*               |
+| `"lodash": "^4.17.0"` with a lockfile entry  | version from `package-lock.json` | exact                    |
+| `"lodash": "^4.17.0"` without a lockfile     | `4.17.0`                       | *inferred*               |
+| `numpy` (no version)                         | not checked                      | listed as "not checked"    |
+| Git URLs, local paths, `-r other.txt`        | not checked                      | listed as "skipped"        |
+
+Inferred versions can over-report, because pip or npm usually install a newer release than the lowest allowed one.
+
+### 14.4 Limitations
+
+- Only direct dependencies declared in the manifests are checked. Transitive dependencies are not.
+- Only Python (`requirements*.txt`) and npm (`package.json`) are supported. Other files such as `pyproject.toml`, `Pipfile` or `yarn.lock` are ignored.
+- A vulnerability database lists known issues only. An empty result does not prove the code is secure.
+- CVSS v4-only advisories are not scored and appear as *Unknown* unless GitHub supplies a severity label.
+- The scan needs outbound internet access to `api.osv.dev`. If OSV is unreachable, the endpoint returns a clear `503` message.
 
 ---
 

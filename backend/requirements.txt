@@ -15,3 +15,4 @@ tree_sitter==0.26.0
 tree_sitter_python==0.25.0
 scikit-learn==1.9.1
 sentence_transformers==6.1.0
+httpx==0.28.1

@@ -121,28 +121,98 @@ function renderMarkdown(text) {
 }
 
 function renderAiMessage(answerText, citations) {
-    const messages = document.getElementById("messages");
-    const typingMsg = document.getElementById("typing-msg");
+  const messages = document.getElementById("messages");
+  const typingMsg = document.getElementById("typing-msg");
 
-    const citationHtml = citations.map(c =>
-        `<a class="cite" onclick="showFile('${c.file}', ${c.start_line})">
-        📄 ${c.file.split('/').pop()}:${c.start_line}-${c.end_line}
-        </a>`
-    ).join(" ");
+  const citationHtml = citations.map(c =>
+    `<a class="cite" onclick="showFile('${c.file}', ${c.start_line})">
+       📄 ${c.file.split('/').pop()}:${c.start_line}-${c.end_line}
+     </a>`
+  ).join(" ");
 
-    const aiMsg = document.createElement("div");
-    aiMsg.className = "msg";
-    aiMsg.innerHTML = `
-        <div class="msg-avatar ai">CS</div>
-        <div class="msg-body">
-        <div class="msg-role">CodeSense · ${citations.length} sources</div>
-        <div class="msg-text markdown-body">
-            ${renderMarkdown(answerText)}
-            <div class="msg-citations">${citationHtml}</div>
+  const aiMsg = document.createElement("div");
+  aiMsg.className = "msg";
+  aiMsg.innerHTML = `
+    <div class="msg-avatar ai">CS</div>
+    <div class="msg-body">
+      <div class="msg-role">CodeSense · ${citations.length} sources</div>
+      <div class="msg-text markdown-body">
+        ${renderMarkdown(answerText)}
+        <div class="msg-citations">${citationHtml}</div>
+      </div>
+    </div>`;
+  messages.insertBefore(aiMsg, typingMsg);
+
+  // NEW: find mermaid code blocks and render them
+  renderMermaidIn(aiMsg);
+
+  messages.scrollTop = messages.scrollHeight;
+}
+
+/**
+ * Auto-fix common Mermaid syntax issues before rendering.
+ * - Normalizes Unicode arrows and smart punctuation to ASCII.
+ * - Auto-quotes simple [label] definitions whose label contains special chars
+ *   AND is not already quoted.
+ * Deliberately conservative: labels that already contain " or [ ] are left alone
+ * to avoid double-wrapping or corrupting valid syntax.
+ */
+function sanitizeMermaid(source) {
+  // 1. Normalize fancy Unicode characters that Mermaid can't parse
+  source = source
+    .replace(/[\u2192\u2794\u279C\u27A1\u27F6\u21D2\u21E8\u279D\u27A4]/g, '-->')   // → ➔ ➜ ➡ ⟶ ⇒ ⇨
+    .replace(/[\u2190\u2B05\u27F5\u21D0]/g, '<--')                                  // ← ⬅ ⟵ ⇐
+    .replace(/[\u2194\u27F7\u21D4]/g, '<-->')                                       // ↔ ⟷ ⇔
+    .replace(/[\u2013\u2014]/g, '-')                                                // – —
+    .replace(/[\u201C\u201D]/g, '"')                                                // " "
+    .replace(/[\u2018\u2019]/g, "'");                                               // ' '
+
+  // 2. Auto-quote simple ID[label] definitions where the label has special chars.
+  //    IMPORTANT: the character class [^"\[\]\n] excludes labels that already
+  //    contain quotes or nested brackets — those are left ALONE to avoid
+  //    corrupting valid syntax.
+  return source.replace(
+    /([A-Za-z_]\w*)\[([^"\[\]\n]*)\]/g,
+    (match, id, label) => {
+      if (/^[A-Za-z0-9_ \-]*$/.test(label)) return match;   // already safe
+      return `${id}["${label}"]`;
+    }
+  );
+}
+
+async function renderMermaidIn(root) {
+  const blocks = root.querySelectorAll('pre > code.language-mermaid');
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i];
+    const source = sanitizeMermaid(block.textContent);   // Layer 2 runs here
+    const id = `mmd-${Date.now()}-${i}`;
+    try {
+      const { svg } = await mermaid.render(id, source);
+      const container = document.createElement('div');
+      container.className = 'mermaid-rendered';
+      container.innerHTML = svg;
+      block.parentElement.replaceWith(container);
+    } catch (e) {
+      // Layer 3 — friendly fallback instead of the bomb icon
+      const fallback = document.createElement('div');
+      fallback.className = 'mermaid-fallback';
+      fallback.innerHTML = `
+        <div class="mermaid-fallback-head">
+          ⚠ Diagram couldn't render — the model produced invalid Mermaid syntax.
         </div>
-        </div>`;
-    messages.insertBefore(aiMsg, typingMsg);
-    messages.scrollTop = messages.scrollHeight;
+        <details>
+          <summary>Show diagram source</summary>
+          <pre class="mermaid-fallback-src">${escHtml(source)}</pre>
+        </details>
+      `;
+      block.parentElement.replaceWith(fallback);
+      // Mermaid may have injected its own error SVG — clean it up
+      const stale = document.getElementById(id);
+      if (stale) stale.remove();
+      const staleErr = document.querySelector(`[id^="d${id}"]`);
+      if (staleErr) staleErr.remove();
+    }
+  }
 }
 
 function handleKey(e) {

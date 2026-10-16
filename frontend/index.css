@@ -673,3 +673,110 @@ cursor: pointer;
 .markdown-body .msg-citations a {
     /* ensure citations still display inline */
 }
+
+/* Key points — scannable fact list */
+.markdown-body h3 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-weight: 600;
+  margin: 18px 0 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.markdown-body ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.markdown-body ul li {
+  position: relative;
+  padding: 10px 12px 10px 28px;
+  background: rgba(79, 142, 247, 0.03);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.markdown-body ul li::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 17px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.markdown-body ul li strong {
+  color: var(--accent2);
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.markdown-body ul li code {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* Make the follow-up chips row NOT look like a bullet list even though it's a <ul> */
+.markdown-body .fu-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.markdown-body .fu-row li { all: unset; }
+
+/* Mermaid fallback — Layer 3 */
+.mermaid-fallback {
+  background: rgba(245, 166, 35, 0.05);
+  border: 1px solid rgba(245, 166, 35, 0.3);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 12px 0;
+  font-size: 12px;
+}
+.mermaid-fallback-head {
+  color: var(--amber);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.mermaid-fallback details summary {
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px 0;
+  list-style: none;
+}
+.mermaid-fallback details summary::-webkit-details-marker {
+  display: none;
+}
+.mermaid-fallback details summary::before {
+  content: '▸ ';
+  display: inline-block;
+  transition: transform 0.15s;
+}
+.mermaid-fallback details[open] summary::before {
+  transform: rotate(90deg);
+}
+.mermaid-fallback details summary:hover {
+  color: var(--text);
+}
+.mermaid-fallback-src {
+  margin: 6px 0 0;
+  padding: 10px;
+  background: #0d1115;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  overflow-x: auto;
+  white-space: pre;
+}

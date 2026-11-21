@@ -19,6 +19,10 @@ from tree_sitter import Parser, Language
 import tree_sitter_python as tspython
 
 from .chunker import CHUNKERS
+from .graph_builder import (
+    build_dependency_graph as ast_build_dependency_graph,
+    GRAPH_BUILDER_VERSION as AST_GRAPH_BUILDER_VERSION,
+)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -31,7 +35,7 @@ INDEXES_DIR = DATA_DIR / "indexes"
 
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"   # Sprint 1 only; Sprint 2 will upgrade
 CHUNKER_NAME = os.environ.get("CODESENSE_CHUNKER", "function_level")
-GRAPH_BUILDER_VERSION = "sprint1-identifier-regex"
+GRAPH_BUILDER_VERSION = AST_GRAPH_BUILDER_VERSION
 MAX_REPO_LOC = 100_000                 # Prototype size cap
 
 
@@ -135,40 +139,15 @@ def _load_embedding_model():
 # Graph
 # ─────────────────────────────────────────────────────────────────────────────
 
-def build_dependency_graph(chunks):
-    """Identifier-based call graph (same as spike)."""
-    import re
-    ident_re = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
+def build_dependency_graph(chunks, repo_path=None, trace_file=None):
+    """AST-based dependency graph. Delegates to `graph_builder.py`.
 
-    graph = nx.DiGraph()
-    name_to_ids = {}
-
-    for chunk in chunks:
-        if chunk["chunk_type"] in ("func", "class"):
-            node_id = f"{chunk['file_path']}::{chunk['name']}"
-            graph.add_node(
-                node_id,
-                type=chunk["chunk_type"],
-                file=chunk["file_path"],
-                lines=f"{chunk['start_line']}-{chunk['end_line']}",
-            )
-            name_to_ids.setdefault(chunk["name"], []).append(node_id)
-
-    for chunk in chunks:
-        if chunk["chunk_type"] not in ("func", "class"):
-            continue
-        source_id = f"{chunk['file_path']}::{chunk['name']}"
-        tokens = set(ident_re.findall(chunk["code"]))
-        for name, targets in name_to_ids.items():
-            if name == chunk["name"] or len(name) < 3:
-                continue
-            if name not in tokens:
-                continue
-            for target_id in targets:
-                if source_id != target_id:
-                    graph.add_edge(source_id, target_id)
-
-    return graph
+    Signature extended with `repo_path` (optional, required for real analysis)
+    and `trace_file` (optional, overlays dynamic call edges). Old callers that
+    pass only `chunks` get an empty graph with the builder version stamped,
+    and a warning on stderr.
+    """
+    return ast_build_dependency_graph(chunks, repo_path=repo_path, trace_file=trace_file)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -241,7 +220,7 @@ def index_repository(
     report("embedding", 80)
 
     # 5. Graph
-    graph = build_dependency_graph(chunks)
+    graph = build_dependency_graph(chunks, repo_path=repo_path)
     report("graph", 90)
 
     # 6. Persist to disk (chunks.json was unused — dropped).
@@ -251,6 +230,17 @@ def index_repository(
     with open(index_dir / "chunks_full.json", "w") as f:
         json.dump(chunks, f)   # with code — needed for the query endpoint
     np.savez_compressed(index_dir / "embeddings.npz", embeddings=embeddings)
+
+    # graphml cannot serialize Counter / dict graph-level attrs, so pop them
+    # out and fold them into metadata.json. The graph itself only carries
+    # scalar attrs on nodes/edges.
+    graph_stats = {
+        "edge_counts_by_type":       dict(graph.graph.pop("edge_counts_by_type", {})),
+        "edge_counts_by_source":     dict(graph.graph.pop("edge_counts_by_source", {})),
+        "edge_counts_by_confidence": dict(graph.graph.pop("edge_counts_by_confidence", {})),
+        "node_counts_by_tag":        graph.graph.pop("node_counts_by_tag", {}),
+        "call_phase_stats":          graph.graph.pop("call_phase_stats", {}),
+    }
     nx.write_graphml(graph, index_dir / "graph.graphml")
 
     with open(index_dir / "metadata.json", "w") as f:
@@ -264,6 +254,7 @@ def index_repository(
             "chunker_name": CHUNKER_NAME,
             "token_budget": budget,
             "graph_builder_version": GRAPH_BUILDER_VERSION,
+            "graph_stats": graph_stats,
             "skipped_files": skipped_files,
         }, f, indent=2)
 

@@ -1,0 +1,49 @@
+{
+  "source_file": "backend\\evaluation\\baseline\\graph_flask_baseline.graphml",
+  "node_count": 1309,
+  "edge_count": 18320,
+  "edge_to_node_ratio": 13.9954,
+  "self_edges": 0,
+  "top_10_out_degree": [
+    {
+      "node": "src/flask/app.py::Flask",
+      "out_degree": 245
+    },
+    {
+      "node": "src/flask/sansio/app.py::App",
+      "out_degree": 185
+    },
+    {
+      "node": "src/flask/sansio/scaffold.py::Scaffold",
+      "out_degree": 159
+    },
+    {
+      "node": "src/flask/sansio/blueprints.py::Blueprint",
+      "out_degree": 137
+    },
+    {
+      "node": "src/flask/ctx.py::AppContext",
+      "out_degree": 94
+    },
+    {
+      "node": "tests/test_helpers.py::TestStreaming",
+      "out_degree": 85
+    },
+    {
+      "node": "src/flask/testing.py::FlaskClient",
+      "out_degree": 79
+    },
+    {
+      "node": "src/flask/json/tag.py::TaggedJSONSerializer",
+      "out_degree": 77
+    },
+    {
+      "node": "src/flask/cli.py::FlaskGroup",
+      "out_degree": 73
+    },
+    {
+      "node": "src/flask/config.py::Config",
+      "out_degree": 73
+    }
+  ]
+}

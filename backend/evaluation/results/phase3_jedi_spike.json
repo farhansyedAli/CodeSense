@@ -1,0 +1,80 @@
+{
+  "files_measured": 10,
+  "total_seconds": 38.858,
+  "mean_seconds_per_file": 3.886,
+  "representative_file_seconds": 0.531,
+  "representative_file": "src/flask/views.py",
+  "verdict": "OK",
+  "per_file": [
+    {
+      "file": "src/flask/__init__.py",
+      "refs": 116,
+      "resolved": 116,
+      "resolved_fraction": 1.0,
+      "seconds": 1.374
+    },
+    {
+      "file": "src/flask/app.py",
+      "refs": 1632,
+      "resolved": 1578,
+      "resolved_fraction": 0.967,
+      "seconds": 20.5
+    },
+    {
+      "file": "src/flask/blueprints.py",
+      "refs": 149,
+      "resolved": 147,
+      "resolved_fraction": 0.987,
+      "seconds": 0.534
+    },
+    {
+      "file": "src/flask/cli.py",
+      "refs": 1516,
+      "resolved": 1432,
+      "resolved_fraction": 0.945,
+      "seconds": 7.83
+    },
+    {
+      "file": "src/flask/config.py",
+      "refs": 397,
+      "resolved": 394,
+      "resolved_fraction": 0.992,
+      "seconds": 0.865
+    },
+    {
+      "file": "src/flask/ctx.py",
+      "refs": 550,
+      "resolved": 543,
+      "resolved_fraction": 0.987,
+      "seconds": 0.718
+    },
+    {
+      "file": "src/flask/helpers.py",
+      "refs": 565,
+      "resolved": 546,
+      "resolved_fraction": 0.966,
+      "seconds": 1.433
+    },
+    {
+      "file": "src/flask/sessions.py",
+      "refs": 413,
+      "resolved": 411,
+      "resolved_fraction": 0.995,
+      "seconds": 1.253
+    },
+    {
+      "file": "src/flask/testing.py",
+      "refs": 444,
+      "resolved": 418,
+      "resolved_fraction": 0.941,
+      "seconds": 3.82
+    },
+    {
+      "file": "src/flask/views.py",
+      "refs": 195,
+      "resolved": 187,
+      "resolved_fraction": 0.959,
+      "seconds": 0.531
+    }
+  ]
+}

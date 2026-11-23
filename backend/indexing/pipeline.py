@@ -34,7 +34,10 @@ REPOS_DIR = DATA_DIR / "repos"
 INDEXES_DIR = DATA_DIR / "indexes"
 
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"   # Sprint 1 only; Sprint 2 will upgrade
-CHUNKER_NAME = os.environ.get("CODESENSE_CHUNKER", "function_level")
+# Default picked by Sprint-2 chunker eval on a 20-query Flask ground truth:
+# greedy_sibling_merge scored R@5 = 0.80 / MRR = 0.58, versus the next-best
+# at R@5 = 0.60 / MRR = 0.49. See backend/evaluation/results/chunker_eval.json.
+CHUNKER_NAME = os.environ.get("CODESENSE_CHUNKER", "greedy_sibling_merge")
 GRAPH_BUILDER_VERSION = AST_GRAPH_BUILDER_VERSION
 MAX_REPO_LOC = 100_000                 # Prototype size cap
 

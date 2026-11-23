@@ -1,0 +1,503 @@
+{
+  "repo": "flask",
+  "ground_truth_size": 52,
+  "label_counts": {
+    "true": 43,
+    "false": 9
+  },
+  "baseline_strict": {
+    "totals": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 43,
+      "tn": 9
+    },
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "pair_match_rate_over_gt": 0.0577,
+    "edge_type_accuracy_on_matched_pairs": 0.0,
+    "per_edge_type": {
+      "calls": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 22,
+        "tn": 4
+      },
+      "inherits": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 7,
+        "tn": 2
+      },
+      "imports": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 12,
+        "tn": 2
+      },
+      "decorates": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 2,
+        "tn": 1
+      }
+    },
+    "examples": {
+      "fn": [
+        {
+          "src": "src/flask/app.py::Flask.__call__",
+          "tgt": "src/flask/app.py::Flask.wsgi_app",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: Flask.__call__ returns self.wsgi_app(environ, start_response); observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.__init__",
+          "tgt": "src/flask/sansio/app.py::App.__init__",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: super().__init__(...) and Flask extends App; observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.app_context",
+          "tgt": "src/flask/ctx.py::AppContext.__init__",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: Flask.app_context returns AppContext(self); constructor call. Observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.dispatch_request",
+          "tgt": "src/flask/app.py::Flask.ensure_sync",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: self.ensure_sync(view_func)(**view_args). Observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.dispatch_request",
+          "tgt": "src/flask/app.py::Flask.raise_routing_exception",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: Flask.dispatch_request calls self.raise_routing_exception(req). Observed dynamically."
+        }
+      ],
+      "fp": [],
+      "tp": [],
+      "tn": [
+        {
+          "src": "src/flask/ctx.py::_AppCtxGlobals",
+          "tgt": "external::_sentinel",
+          "edge_type": "inherits",
+          "label": false,
+          "evidence": "_AppCtxGlobals does not inherit _sentinel; the old builder could produce a bogus edge from identifier-collisions."
+        },
+        {
+          "src": "src/flask/app.py",
+          "tgt": "tests/test_appctx.py",
+          "edge_type": "imports",
+          "label": false,
+          "evidence": "src/flask/app.py does NOT import from tests. The old regex builder could produce a bogus call-collision edge between symbols sharing bare names like 'index'; this is the import analogue of that defect."
+        },
+        {
+          "src": "tests/test_appctx.py::index",
+          "tgt": "src/flask/app.py::Flask",
+          "edge_type": "calls",
+          "label": false,
+          "evidence": "test_appctx.py has a function named 'index' used as a view; it does NOT call Flask(). The old regex builder frequently emitted edges between unrelated bare-name collisions."
+        },
+        {
+          "src": "tests/test_blueprints.py::index",
+          "tgt": "src/flask/blueprints.py::Blueprint.record",
+          "edge_type": "calls",
+          "label": false,
+          "evidence": "No call relationship exists; another bare-name collision case."
+        },
+        {
+          "src": "tests/test_helpers.py::TestStreaming",
+          "tgt": "src/flask/app.py::Flask",
+          "edge_type": "calls",
+          "label": false,
+          "evidence": "TestStreaming is a pytest class; it does not CALL Flask (it may instantiate one via a fixture, but the old builder produced spurious direct class-to-class edges for every bare-name match in the file body)."
+        }
+      ],
+      "wrong_type": [
+        {
+          "gt_edge": {
+            "src": "src/flask/app.py::Flask",
+            "tgt": "src/flask/sansio/app.py::App",
+            "gt_edge_type": "inherits",
+            "label": true
+          },
+          "predicted_edge_type": "calls"
+        },
+        {
+          "gt_edge": {
+            "src": "src/flask/sansio/app.py::App",
+            "tgt": "src/flask/sansio/scaffold.py::Scaffold",
+            "gt_edge_type": "inherits",
+            "label": true
+          },
+          "predicted_edge_type": "calls"
+        },
+        {
+          "gt_edge": {
+            "src": "src/flask/views.py::MethodView",
+            "tgt": "src/flask/views.py::View",
+            "gt_edge_type": "inherits",
+            "label": true
+          },
+          "predicted_edge_type": "calls"
+        }
+      ]
+    }
+  },
+  "baseline_leaf": {
+    "totals": {
+      "tp": 14,
+      "fp": 0,
+      "fn": 29,
+      "tn": 9
+    },
+    "precision": 1.0,
+    "recall": 0.3256,
+    "f1": 0.4912,
+    "pair_match_rate_over_gt": 0.3269,
+    "edge_type_accuracy_on_matched_pairs": 0.8235,
+    "per_edge_type": {
+      "calls": {
+        "tp": 14,
+        "fp": 0,
+        "fn": 8,
+        "tn": 4
+      },
+      "inherits": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 7,
+        "tn": 2
+      },
+      "imports": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 12,
+        "tn": 2
+      },
+      "decorates": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 2,
+        "tn": 1
+      }
+    },
+    "examples": {
+      "fn": [
+        {
+          "src": "src/flask/app.py::Flask.__init__",
+          "tgt": "src/flask/sansio/app.py::App.__init__",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: super().__init__(...) and Flask extends App; observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.app_context",
+          "tgt": "src/flask/ctx.py::AppContext.__init__",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: Flask.app_context returns AppContext(self); constructor call. Observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.create_jinja_environment",
+          "tgt": "src/flask/templating.py::Environment.__init__",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: returns Environment(self, **options). Observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.do_teardown_appcontext",
+          "tgt": "src/flask/helpers.py::_CollectErrors.__enter__",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: with _CollectErrors(...): invokes __enter__. Observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.make_default_options_response",
+          "tgt": "src/flask/ctx.py::AppContext.request",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: builds response from ctx.request / adapter.allowed_methods. Observed dynamically."
+        }
+      ],
+      "fp": [],
+      "tp": [
+        {
+          "src": "src/flask/app.py::Flask.__call__",
+          "tgt": "src/flask/app.py::Flask.wsgi_app",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: Flask.__call__ returns self.wsgi_app(environ, start_response); observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.dispatch_request",
+          "tgt": "src/flask/app.py::Flask.ensure_sync",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: self.ensure_sync(view_func)(**view_args). Observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.dispatch_request",
+          "tgt": "src/flask/app.py::Flask.raise_routing_exception",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: Flask.dispatch_request calls self.raise_routing_exception(req). Observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.handle_exception",
+          "tgt": "src/flask/app.py::Flask.ensure_sync",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: handle_exception calls self.ensure_sync(handler)(e). Observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.handle_user_exception",
+          "tgt": "src/flask/app.py::Flask.ensure_sync",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: handle_user_exception also wraps handler through ensure_sync. Observed dynamically."
+        }
+      ],
+      "tn": [
+        {
+          "src": "src/flask/ctx.py::_AppCtxGlobals",
+          "tgt": "external::_sentinel",
+          "edge_type": "inherits",
+          "label": false,
+          "evidence": "_AppCtxGlobals does not inherit _sentinel; the old builder could produce a bogus edge from identifier-collisions."
+        },
+        {
+          "src": "src/flask/app.py",
+          "tgt": "tests/test_appctx.py",
+          "edge_type": "imports",
+          "label": false,
+          "evidence": "src/flask/app.py does NOT import from tests. The old regex builder could produce a bogus call-collision edge between symbols sharing bare names like 'index'; this is the import analogue of that defect."
+        },
+        {
+          "src": "tests/test_appctx.py::index",
+          "tgt": "src/flask/app.py::Flask",
+          "edge_type": "calls",
+          "label": false,
+          "evidence": "test_appctx.py has a function named 'index' used as a view; it does NOT call Flask(). The old regex builder frequently emitted edges between unrelated bare-name collisions."
+        },
+        {
+          "src": "tests/test_blueprints.py::index",
+          "tgt": "src/flask/blueprints.py::Blueprint.record",
+          "edge_type": "calls",
+          "label": false,
+          "evidence": "No call relationship exists; another bare-name collision case."
+        },
+        {
+          "src": "tests/test_helpers.py::TestStreaming",
+          "tgt": "src/flask/app.py::Flask",
+          "edge_type": "calls",
+          "label": false,
+          "evidence": "TestStreaming is a pytest class; it does not CALL Flask (it may instantiate one via a fixture, but the old builder produced spurious direct class-to-class edges for every bare-name match in the file body)."
+        }
+      ],
+      "wrong_type": [
+        {
+          "gt_edge": {
+            "src": "src/flask/app.py::Flask",
+            "tgt": "src/flask/sansio/app.py::App",
+            "gt_edge_type": "inherits",
+            "label": true
+          },
+          "predicted_edge_type": "calls"
+        },
+        {
+          "gt_edge": {
+            "src": "src/flask/sansio/app.py::App",
+            "tgt": "src/flask/sansio/scaffold.py::Scaffold",
+            "gt_edge_type": "inherits",
+            "label": true
+          },
+          "predicted_edge_type": "calls"
+        },
+        {
+          "gt_edge": {
+            "src": "src/flask/views.py::MethodView",
+            "tgt": "src/flask/views.py::View",
+            "gt_edge_type": "inherits",
+            "label": true
+          },
+          "predicted_edge_type": "calls"
+        }
+      ]
+    }
+  },
+  "new_builder": {
+    "totals": {
+      "tp": 30,
+      "fp": 1,
+      "fn": 13,
+      "tn": 8
+    },
+    "precision": 0.9677,
+    "recall": 0.6977,
+    "f1": 0.8108,
+    "pair_match_rate_over_gt": 0.5962,
+    "edge_type_accuracy_on_matched_pairs": 1.0,
+    "per_edge_type": {
+      "calls": {
+        "tp": 14,
+        "fp": 0,
+        "fn": 8,
+        "tn": 4
+      },
+      "inherits": {
+        "tp": 4,
+        "fp": 0,
+        "fn": 3,
+        "tn": 2
+      },
+      "imports": {
+        "tp": 12,
+        "fp": 1,
+        "fn": 0,
+        "tn": 1
+      },
+      "decorates": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 2,
+        "tn": 1
+      }
+    },
+    "examples": {
+      "fn": [
+        {
+          "src": "src/flask/app.py::Flask.make_default_options_response",
+          "tgt": "src/flask/ctx.py::AppContext.request",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: builds response from ctx.request / adapter.allowed_methods. Observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.wsgi_app",
+          "tgt": "src/flask/ctx.py::RequestContext.__enter__",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: with self.request_context(environ): calls __enter__. Observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.wsgi_app",
+          "tgt": "src/flask/ctx.py::RequestContext.__exit__",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: context manager exit after dispatch. Observed dynamically."
+        },
+        {
+          "src": "src/flask/blueprints.py::Blueprint.send_static_file",
+          "tgt": "src/flask/sansio/scaffold.py::Scaffold.has_static_folder",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/blueprints.py: send_static_file checks self.has_static_folder. Observed dynamically."
+        },
+        {
+          "src": "src/flask/blueprints.py::Blueprint",
+          "tgt": "src/flask/sansio/blueprints.py::SansioBlueprint",
+          "edge_type": "inherits",
+          "label": true,
+          "evidence": "src/flask/blueprints.py line 18: class Blueprint(SansioBlueprint):"
+        }
+      ],
+      "fp": [
+        {
+          "src": "src/flask/cli.py",
+          "tgt": "src/flask/app.py",
+          "edge_type": "imports",
+          "label": false,
+          "evidence": "cli.py does not import from .app; it is imported BY app.py via `from . import cli`. This is the import-direction inversion case."
+        }
+      ],
+      "tp": [
+        {
+          "src": "src/flask/app.py::Flask.__call__",
+          "tgt": "src/flask/app.py::Flask.wsgi_app",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: Flask.__call__ returns self.wsgi_app(environ, start_response); observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.__init__",
+          "tgt": "src/flask/sansio/app.py::App.__init__",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: super().__init__(...) and Flask extends App; observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.app_context",
+          "tgt": "src/flask/ctx.py::AppContext.__init__",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: Flask.app_context returns AppContext(self); constructor call. Observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.dispatch_request",
+          "tgt": "src/flask/app.py::Flask.ensure_sync",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: self.ensure_sync(view_func)(**view_args). Observed dynamically."
+        },
+        {
+          "src": "src/flask/app.py::Flask.dispatch_request",
+          "tgt": "src/flask/app.py::Flask.raise_routing_exception",
+          "edge_type": "calls",
+          "label": true,
+          "evidence": "src/flask/app.py: Flask.dispatch_request calls self.raise_routing_exception(req). Observed dynamically."
+        }
+      ],
+      "tn": [
+        {
+          "src": "src/flask/ctx.py::_AppCtxGlobals",
+          "tgt": "external::_sentinel",
+          "edge_type": "inherits",
+          "label": false,
+          "evidence": "_AppCtxGlobals does not inherit _sentinel; the old builder could produce a bogus edge from identifier-collisions."
+        },
+        {
+          "src": "src/flask/app.py",
+          "tgt": "tests/test_appctx.py",
+          "edge_type": "imports",
+          "label": false,
+          "evidence": "src/flask/app.py does NOT import from tests. The old regex builder could produce a bogus call-collision edge between symbols sharing bare names like 'index'; this is the import analogue of that defect."
+        },
+        {
+          "src": "tests/test_appctx.py::index",
+          "tgt": "src/flask/app.py::Flask",
+          "edge_type": "calls",
+          "label": false,
+          "evidence": "test_appctx.py has a function named 'index' used as a view; it does NOT call Flask(). The old regex builder frequently emitted edges between unrelated bare-name collisions."
+        },
+        {
+          "src": "tests/test_blueprints.py::index",
+          "tgt": "src/flask/blueprints.py::Blueprint.record",
+          "edge_type": "calls",
+          "label": false,
+          "evidence": "No call relationship exists; another bare-name collision case."
+        },
+        {
+          "src": "tests/test_helpers.py::TestStreaming",
+          "tgt": "src/flask/app.py::Flask",
+          "edge_type": "calls",
+          "label": false,
+          "evidence": "TestStreaming is a pytest class; it does not CALL Flask (it may instantiate one via a fixture, but the old builder produced spurious direct class-to-class edges for every bare-name match in the file body)."
+        }
+      ],
+      "wrong_type": []
+    }
+  },
+  "delta_vs_leaf_baseline": {
+    "precision": -0.0323,
+    "recall": 0.3721,
+    "f1": 0.3196
+  }
+}

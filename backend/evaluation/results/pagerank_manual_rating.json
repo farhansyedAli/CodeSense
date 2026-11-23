@@ -1,0 +1,83 @@
+{
+  "graph": "backend/evaluation/results/graph_flask_new.graphml",
+  "method": "The top 10 nodes by PageRank on the call subgraph were rated by reading the referenced source in data/repos/fa1df9ec-61f6-4497-ab7d-184bbc30aee5. 'core' means the node is load-bearing in Flask's public machinery (request lifecycle, routing, globals, setup-time safety). 'peripheral' means it is useful but not on the hot path: examples, specific-case helpers.",
+  "target_rule": "at least 7 of 10 top-PageRank nodes judged 'core'",
+  "ratings": [
+    {
+      "rank": 1,
+      "pagerank": 0.00569,
+      "node": "src/flask/sansio/blueprints.py::Blueprint.record_once",
+      "verdict": "core",
+      "rationale": "Blueprint deferred-setup primitive; every blueprint call eventually goes through record / record_once."
+    },
+    {
+      "rank": 2,
+      "pagerank": 0.00380,
+      "node": "examples/tutorial/flaskr/db.py::get_db",
+      "verdict": "peripheral",
+      "rationale": "Lives under /examples/tutorial, not Flask proper. Only tutorial code calls it, but it has many callers inside that example."
+    },
+    {
+      "rank": 3,
+      "pagerank": 0.00318,
+      "node": "src/flask/sansio/blueprints.py::Blueprint.record",
+      "verdict": "core",
+      "rationale": "Core blueprint deferred-callback mechanism."
+    },
+    {
+      "rank": 4,
+      "pagerank": 0.00272,
+      "node": "src/flask/sansio/scaffold.py::Scaffold._method_route",
+      "verdict": "core",
+      "rationale": "Internal helper behind Scaffold.get / .post / .put etc. — every method-shortcut goes through it."
+    },
+    {
+      "rank": 5,
+      "pagerank": 0.00230,
+      "node": "src/flask/json/tag.py::TaggedJSONSerializer.tag",
+      "verdict": "peripheral",
+      "rationale": "One specific JSON serializer helper for tagged types in the signed-session path; not on the typical request hot path."
+    },
+    {
+      "rank": 6,
+      "pagerank": 0.00186,
+      "node": "src/flask/app.py::Flask.ensure_sync",
+      "verdict": "core",
+      "rationale": "Called for every view invocation; handles async-view wrapping. Central to Flask's dispatch."
+    },
+    {
+      "rank": 7,
+      "pagerank": 0.00175,
+      "node": "src/flask/sansio/scaffold.py::Scaffold.route",
+      "verdict": "core",
+      "rationale": "The @app.route decorator itself. Can't be more core than this."
+    },
+    {
+      "rank": 8,
+      "pagerank": 0.00168,
+      "node": "src/flask/globals.py::ProxyMixin._get_current_object",
+      "verdict": "core",
+      "rationale": "Backbone of every LocalProxy access (request, session, current_app, g). Reached millions of times per request."
+    },
+    {
+      "rank": 9,
+      "pagerank": 0.00159,
+      "node": "src/flask/sansio/scaffold.py::setupmethod",
+      "verdict": "core",
+      "rationale": "The decorator guarding all setup-time methods (route, before_request, register_blueprint…) against post-boot mutation."
+    },
+    {
+      "rank": 10,
+      "pagerank": 0.00158,
+      "node": "src/flask/sansio/scaffold.py::setupmethod.<locals>.wrapper_func",
+      "verdict": "core",
+      "rationale": "The closure setupmethod returns; every protected setup call runs through here."
+    }
+  ],
+  "summary": {
+    "core_count": 8,
+    "peripheral_count": 2,
+    "target": 7,
+    "pass": true
+  }
+}

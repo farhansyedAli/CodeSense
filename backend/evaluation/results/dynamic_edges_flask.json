@@ -1,0 +1,638 @@
+[
+  {
+    "caller": "src/flask/app.py::Flask.__call__",
+    "callee": "src/flask/app.py::Flask.wsgi_app"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.__init__",
+    "callee": "src/flask/sansio/app.py::App.__init__"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.__init__",
+    "callee": "src/flask/sansio/scaffold.py::Scaffold.has_static_folder"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.__init__",
+    "callee": "src/flask/sansio/scaffold.py::Scaffold.static_url_path"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.__init__",
+    "callee": "src/flask/sansio/scaffold.py::setupmethod.<locals>.wrapper_func"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.app_context",
+    "callee": "src/flask/ctx.py::AppContext.__init__"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.create_jinja_environment",
+    "callee": "src/flask/sansio/app.py::App.debug"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.create_jinja_environment",
+    "callee": "src/flask/templating.py::Environment.__init__"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.dispatch_request",
+    "callee": "src/flask/app.py::Flask.ensure_sync"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.dispatch_request",
+    "callee": "src/flask/app.py::Flask.raise_routing_exception"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.dispatch_request",
+    "callee": "src/flask/ctx.py::AppContext.request"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.do_teardown_appcontext",
+    "callee": "src/flask/helpers.py::_CollectErrors.__enter__"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.do_teardown_appcontext",
+    "callee": "src/flask/helpers.py::_CollectErrors.__exit__"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.do_teardown_appcontext",
+    "callee": "src/flask/helpers.py::_CollectErrors.__init__"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.do_teardown_appcontext",
+    "callee": "src/flask/helpers.py::_CollectErrors.raise_any"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.do_teardown_request",
+    "callee": "src/flask/ctx.py::AppContext.request"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.do_teardown_request",
+    "callee": "src/flask/helpers.py::_CollectErrors.__enter__"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.do_teardown_request",
+    "callee": "src/flask/helpers.py::_CollectErrors.__exit__"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.do_teardown_request",
+    "callee": "src/flask/helpers.py::_CollectErrors.__init__"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.do_teardown_request",
+    "callee": "src/flask/helpers.py::_CollectErrors.raise_any"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.do_teardown_request",
+    "callee": "src/flask/wrappers.py::Request.blueprints"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.finalize_request",
+    "callee": "src/flask/app.py::Flask.make_response"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.finalize_request",
+    "callee": "src/flask/app.py::Flask.process_response"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.full_dispatch_request",
+    "callee": "src/flask/app.py::Flask.dispatch_request"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.full_dispatch_request",
+    "callee": "src/flask/app.py::Flask.finalize_request"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.full_dispatch_request",
+    "callee": "src/flask/app.py::Flask.handle_user_exception"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.full_dispatch_request",
+    "callee": "src/flask/app.py::Flask.preprocess_request"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.handle_http_exception",
+    "callee": "src/flask/app.py::Flask.ensure_sync"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.handle_http_exception",
+    "callee": "src/flask/ctx.py::AppContext.request"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.handle_http_exception",
+    "callee": "src/flask/sansio/app.py::App._find_error_handler"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.handle_http_exception",
+    "callee": "src/flask/wrappers.py::Request.blueprints"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.handle_user_exception",
+    "callee": "src/flask/app.py::Flask.handle_http_exception"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.handle_user_exception",
+    "callee": "src/flask/sansio/app.py::App.trap_http_exception"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.preprocess_request",
+    "callee": "src/flask/ctx.py::AppContext.request"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.preprocess_request",
+    "callee": "src/flask/wrappers.py::Request.blueprints"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.process_response",
+    "callee": "src/flask/ctx.py::AppContext._get_session"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.process_response",
+    "callee": "src/flask/ctx.py::AppContext.request"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.process_response",
+    "callee": "src/flask/sessions.py::SecureCookieSessionInterface.save_session"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.process_response",
+    "callee": "src/flask/sessions.py::SessionInterface.is_null_session"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.process_response",
+    "callee": "src/flask/wrappers.py::Request.blueprints"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.raise_routing_exception",
+    "callee": "src/flask/sansio/app.py::App.debug"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.request_context",
+    "callee": "src/flask/ctx.py::AppContext.from_environ"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.test_client",
+    "callee": "src/flask/testing.py::FlaskClient.__init__"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.test_request_context",
+    "callee": "src/flask/app.py::Flask.request_context"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.test_request_context",
+    "callee": "src/flask/testing.py::EnvironBuilder.__init__"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.update_template_context",
+    "callee": "src/flask/app.py::Flask.ensure_sync"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.update_template_context",
+    "callee": "src/flask/ctx.py::AppContext.has_request"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.update_template_context",
+    "callee": "src/flask/ctx.py::AppContext.request"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.update_template_context",
+    "callee": "src/flask/templating.py::_default_template_ctx_processor"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.update_template_context",
+    "callee": "src/flask/wrappers.py::Request.blueprints"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.url_for",
+    "callee": "src/flask/ctx.py::AppContext.has_request"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.url_for",
+    "callee": "src/flask/ctx.py::AppContext.request"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.url_for",
+    "callee": "src/flask/sansio/app.py::App.inject_url_defaults"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.url_for",
+    "callee": "src/flask/wrappers.py::Request.blueprint"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.wsgi_app",
+    "callee": "src/flask/app.py::Flask.full_dispatch_request"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.wsgi_app",
+    "callee": "src/flask/app.py::Flask.request_context"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.wsgi_app",
+    "callee": "src/flask/ctx.py::AppContext.pop"
+  },
+  {
+    "caller": "src/flask/app.py::Flask.wsgi_app",
+    "callee": "src/flask/ctx.py::AppContext.push"
+  },
+  {
+    "caller": "src/flask/blueprints.py::Blueprint.__init__",
+    "callee": "src/flask/sansio/blueprints.py::Blueprint.__init__"
+  },
+  {
+    "caller": "src/flask/ctx.py::AppContext.__enter__",
+    "callee": "src/flask/ctx.py::AppContext.push"
+  },
+  {
+    "caller": "src/flask/ctx.py::AppContext.__exit__",
+    "callee": "src/flask/ctx.py::AppContext.pop"
+  },
+  {
+    "caller": "src/flask/ctx.py::AppContext.__init__",
+    "callee": "src/flask/app.py::Flask.create_url_adapter"
+  },
+  {
+    "caller": "src/flask/ctx.py::AppContext._get_session",
+    "callee": "src/flask/ctx.py::AppContext.request"
+  },
+  {
+    "caller": "src/flask/ctx.py::AppContext._get_session",
+    "callee": "src/flask/sessions.py::SecureCookieSessionInterface.open_session"
+  },
+  {
+    "caller": "src/flask/ctx.py::AppContext.from_environ",
+    "callee": "src/flask/ctx.py::AppContext.__init__"
+  },
+  {
+    "caller": "src/flask/ctx.py::AppContext.pop",
+    "callee": "src/flask/app.py::Flask.do_teardown_appcontext"
+  },
+  {
+    "caller": "src/flask/ctx.py::AppContext.pop",
+    "callee": "src/flask/app.py::Flask.do_teardown_request"
+  },
+  {
+    "caller": "src/flask/ctx.py::AppContext.pop",
+    "callee": "src/flask/helpers.py::_CollectErrors.__enter__"
+  },
+  {
+    "caller": "src/flask/ctx.py::AppContext.pop",
+    "callee": "src/flask/helpers.py::_CollectErrors.__exit__"
+  },
+  {
+    "caller": "src/flask/ctx.py::AppContext.pop",
+    "callee": "src/flask/helpers.py::_CollectErrors.__init__"
+  },
+  {
+    "caller": "src/flask/ctx.py::AppContext.pop",
+    "callee": "src/flask/helpers.py::_CollectErrors.raise_any"
+  },
+  {
+    "caller": "src/flask/ctx.py::AppContext.push",
+    "callee": "src/flask/ctx.py::AppContext._get_session"
+  },
+  {
+    "caller": "src/flask/ctx.py::AppContext.push",
+    "callee": "src/flask/ctx.py::AppContext.match_request"
+  },
+  {
+    "caller": "src/flask/helpers.py::redirect",
+    "callee": "src/flask/sansio/app.py::App.redirect"
+  },
+  {
+    "caller": "src/flask/helpers.py::url_for",
+    "callee": "src/flask/app.py::Flask.url_for"
+  },
+  {
+    "caller": "src/flask/json/__init__.py::dumps",
+    "callee": "src/flask/json/provider.py::DefaultJSONProvider.dumps"
+  },
+  {
+    "caller": "src/flask/json/__init__.py::jsonify",
+    "callee": "src/flask/json/provider.py::DefaultJSONProvider.response"
+  },
+  {
+    "caller": "src/flask/json/provider.py::DefaultJSONProvider.response",
+    "callee": "src/flask/json/provider.py::DefaultJSONProvider.dumps"
+  },
+  {
+    "caller": "src/flask/json/provider.py::DefaultJSONProvider.response",
+    "callee": "src/flask/json/provider.py::JSONProvider._prepare_response_obj"
+  },
+  {
+    "caller": "src/flask/json/provider.py::DefaultJSONProvider.response",
+    "callee": "src/flask/sansio/app.py::App.debug"
+  },
+  {
+    "caller": "src/flask/json/tag.py::TaggedJSONSerializer.__init__",
+    "callee": "src/flask/json/tag.py::TaggedJSONSerializer.register"
+  },
+  {
+    "caller": "src/flask/json/tag.py::TaggedJSONSerializer.dumps",
+    "callee": "src/flask/json/__init__.py::dumps"
+  },
+  {
+    "caller": "src/flask/json/tag.py::TaggedJSONSerializer.dumps",
+    "callee": "src/flask/json/tag.py::TaggedJSONSerializer.tag"
+  },
+  {
+    "caller": "src/flask/json/tag.py::TaggedJSONSerializer.register",
+    "callee": "src/flask/json/tag.py::JSONTag.__init__"
+  },
+  {
+    "caller": "src/flask/json/tag.py::TaggedJSONSerializer.tag",
+    "callee": "src/flask/json/tag.py::PassDict.check"
+  },
+  {
+    "caller": "src/flask/json/tag.py::TaggedJSONSerializer.tag",
+    "callee": "src/flask/json/tag.py::PassDict.to_json"
+  },
+  {
+    "caller": "src/flask/json/tag.py::TaggedJSONSerializer.tag",
+    "callee": "src/flask/json/tag.py::TagDict.check"
+  },
+  {
+    "caller": "src/flask/sansio/app.py::App",
+    "callee": "src/flask/sansio/scaffold.py::setupmethod"
+  },
+  {
+    "caller": "src/flask/sansio/app.py::App.__init__",
+    "callee": "src/flask/json/provider.py::JSONProvider.__init__"
+  },
+  {
+    "caller": "src/flask/sansio/app.py::App.__init__",
+    "callee": "src/flask/sansio/app.py::App.auto_find_instance_path"
+  },
+  {
+    "caller": "src/flask/sansio/app.py::App.__init__",
+    "callee": "src/flask/sansio/app.py::App.make_aborter"
+  },
+  {
+    "caller": "src/flask/sansio/app.py::App.__init__",
+    "callee": "src/flask/sansio/app.py::App.make_config"
+  },
+  {
+    "caller": "src/flask/sansio/app.py::App.__init__",
+    "callee": "src/flask/sansio/scaffold.py::Scaffold.__init__"
+  },
+  {
+    "caller": "src/flask/sansio/app.py::App._find_error_handler",
+    "callee": "src/flask/sansio/scaffold.py::Scaffold._get_exc_class_and_code"
+  },
+  {
+    "caller": "src/flask/sansio/app.py::App.add_url_rule",
+    "callee": "src/flask/sansio/scaffold.py::_endpoint_from_view_func"
+  },
+  {
+    "caller": "src/flask/sansio/app.py::App.auto_find_instance_path",
+    "callee": "src/flask/sansio/scaffold.py::find_package"
+  },
+  {
+    "caller": "src/flask/sansio/app.py::App.create_global_jinja_loader",
+    "callee": "src/flask/templating.py::DispatchingJinjaLoader.__init__"
+  },
+  {
+    "caller": "src/flask/sansio/app.py::App.jinja_env",
+    "callee": "src/flask/app.py::Flask.create_jinja_environment"
+  },
+  {
+    "caller": "src/flask/sansio/app.py::App.make_config",
+    "callee": "src/flask/config.py::Config.__init__"
+  },
+  {
+    "caller": "src/flask/sansio/app.py::App.make_config",
+    "callee": "src/flask/helpers.py::get_debug_flag"
+  },
+  {
+    "caller": "src/flask/sansio/app.py::App.register_blueprint",
+    "callee": "src/flask/sansio/blueprints.py::Blueprint.register"
+  },
+  {
+    "caller": "src/flask/sansio/app.py::App.trap_http_exception",
+    "callee": "src/flask/sansio/app.py::App.debug"
+  },
+  {
+    "caller": "src/flask/sansio/blueprints.py::Blueprint",
+    "callee": "src/flask/sansio/scaffold.py::setupmethod"
+  },
+  {
+    "caller": "src/flask/sansio/blueprints.py::Blueprint.__init__",
+    "callee": "src/flask/sansio/scaffold.py::Scaffold.__init__"
+  },
+  {
+    "caller": "src/flask/sansio/blueprints.py::Blueprint._merge_blueprint_funcs",
+    "callee": "src/flask/sansio/blueprints.py::Blueprint._merge_blueprint_funcs.<locals>.extend"
+  },
+  {
+    "caller": "src/flask/sansio/blueprints.py::Blueprint.add_url_rule",
+    "callee": "src/flask/sansio/scaffold.py::setupmethod.<locals>.wrapper_func"
+  },
+  {
+    "caller": "src/flask/sansio/blueprints.py::Blueprint.add_url_rule.<locals>.<lambda>",
+    "callee": "src/flask/sansio/blueprints.py::BlueprintSetupState.add_url_rule"
+  },
+  {
+    "caller": "src/flask/sansio/blueprints.py::Blueprint.make_setup_state",
+    "callee": "src/flask/sansio/blueprints.py::BlueprintSetupState.__init__"
+  },
+  {
+    "caller": "src/flask/sansio/blueprints.py::Blueprint.register",
+    "callee": "src/flask/sansio/blueprints.py::Blueprint._merge_blueprint_funcs"
+  },
+  {
+    "caller": "src/flask/sansio/blueprints.py::Blueprint.register",
+    "callee": "src/flask/sansio/blueprints.py::Blueprint.add_url_rule.<locals>.<lambda>"
+  },
+  {
+    "caller": "src/flask/sansio/blueprints.py::Blueprint.register",
+    "callee": "src/flask/sansio/blueprints.py::Blueprint.make_setup_state"
+  },
+  {
+    "caller": "src/flask/sansio/blueprints.py::Blueprint.register",
+    "callee": "src/flask/sansio/blueprints.py::Blueprint.register.<locals>.<genexpr>"
+  },
+  {
+    "caller": "src/flask/sansio/blueprints.py::Blueprint.register",
+    "callee": "src/flask/sansio/scaffold.py::Scaffold.has_static_folder"
+  },
+  {
+    "caller": "src/flask/sansio/blueprints.py::BlueprintSetupState.add_url_rule",
+    "callee": "src/flask/sansio/scaffold.py::_endpoint_from_view_func"
+  },
+  {
+    "caller": "src/flask/sansio/blueprints.py::BlueprintSetupState.add_url_rule",
+    "callee": "src/flask/sansio/scaffold.py::setupmethod.<locals>.wrapper_func"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::Scaffold",
+    "callee": "src/flask/sansio/scaffold.py::setupmethod"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::Scaffold.__init__",
+    "callee": "src/flask/helpers.py::get_root_path"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::Scaffold.__init__",
+    "callee": "src/flask/sansio/scaffold.py::Scaffold.static_folder"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::Scaffold.__init__",
+    "callee": "src/flask/sansio/scaffold.py::Scaffold.static_url_path"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::Scaffold.errorhandler.<locals>.decorator",
+    "callee": "src/flask/sansio/scaffold.py::setupmethod.<locals>.wrapper_func"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::Scaffold.has_static_folder",
+    "callee": "src/flask/sansio/scaffold.py::Scaffold.static_folder"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::Scaffold.register_error_handler",
+    "callee": "src/flask/sansio/scaffold.py::Scaffold.__init__.<locals>.<lambda>"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::Scaffold.register_error_handler",
+    "callee": "src/flask/sansio/scaffold.py::Scaffold._get_exc_class_and_code"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::Scaffold.route.<locals>.decorator",
+    "callee": "src/flask/sansio/scaffold.py::setupmethod.<locals>.wrapper_func"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::Scaffold.static_url_path",
+    "callee": "src/flask/sansio/scaffold.py::Scaffold.static_folder"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::find_package",
+    "callee": "src/flask/sansio/scaffold.py::_find_package_path"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::setupmethod.<locals>.wrapper_func",
+    "callee": "src/flask/sansio/app.py::App._check_setup_finished"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::setupmethod.<locals>.wrapper_func",
+    "callee": "src/flask/sansio/app.py::App.add_url_rule"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::setupmethod.<locals>.wrapper_func",
+    "callee": "src/flask/sansio/app.py::App.register_blueprint"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::setupmethod.<locals>.wrapper_func",
+    "callee": "src/flask/sansio/blueprints.py::Blueprint._check_setup_finished"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::setupmethod.<locals>.wrapper_func",
+    "callee": "src/flask/sansio/blueprints.py::Blueprint.add_url_rule"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::setupmethod.<locals>.wrapper_func",
+    "callee": "src/flask/sansio/blueprints.py::Blueprint.record"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::setupmethod.<locals>.wrapper_func",
+    "callee": "src/flask/sansio/scaffold.py::Scaffold.errorhandler"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::setupmethod.<locals>.wrapper_func",
+    "callee": "src/flask/sansio/scaffold.py::Scaffold.register_error_handler"
+  },
+  {
+    "caller": "src/flask/sansio/scaffold.py::setupmethod.<locals>.wrapper_func",
+    "callee": "src/flask/sansio/scaffold.py::Scaffold.route"
+  },
+  {
+    "caller": "src/flask/sessions.py::SecureCookieSessionInterface.get_signing_serializer",
+    "callee": "src/flask/config.py::ConfigAttribute.__get__"
+  },
+  {
+    "caller": "src/flask/sessions.py::SecureCookieSessionInterface.open_session",
+    "callee": "src/flask/sessions.py::SecureCookieSession.__init__"
+  },
+  {
+    "caller": "src/flask/sessions.py::SecureCookieSessionInterface.open_session",
+    "callee": "src/flask/sessions.py::SecureCookieSessionInterface.get_signing_serializer"
+  },
+  {
+    "caller": "src/flask/sessions.py::SecureCookieSessionInterface.open_session",
+    "callee": "src/flask/sessions.py::SessionInterface.get_cookie_name"
+  },
+  {
+    "caller": "src/flask/sessions.py::SecureCookieSessionInterface.save_session",
+    "callee": "src/flask/sessions.py::SessionInterface.get_cookie_domain"
+  },
+  {
+    "caller": "src/flask/sessions.py::SecureCookieSessionInterface.save_session",
+    "callee": "src/flask/sessions.py::SessionInterface.get_cookie_httponly"
+  },
+  {
+    "caller": "src/flask/sessions.py::SecureCookieSessionInterface.save_session",
+    "callee": "src/flask/sessions.py::SessionInterface.get_cookie_name"
+  },
+  {
+    "caller": "src/flask/sessions.py::SecureCookieSessionInterface.save_session",
+    "callee": "src/flask/sessions.py::SessionInterface.get_cookie_partitioned"
+  },
+  {
+    "caller": "src/flask/sessions.py::SecureCookieSessionInterface.save_session",
+    "callee": "src/flask/sessions.py::SessionInterface.get_cookie_path"
+  },
+  {
+    "caller": "src/flask/sessions.py::SecureCookieSessionInterface.save_session",
+    "callee": "src/flask/sessions.py::SessionInterface.get_cookie_samesite"
+  },
+  {
+    "caller": "src/flask/sessions.py::SecureCookieSessionInterface.save_session",
+    "callee": "src/flask/sessions.py::SessionInterface.get_cookie_secure"
+  },
+  {
+    "caller": "src/flask/templating.py::Environment.__init__",
+    "callee": "src/flask/sansio/app.py::App.create_global_jinja_loader"
+  },
+  {
+    "caller": "src/flask/templating.py::_default_template_ctx_processor",
+    "callee": "src/flask/ctx.py::AppContext.has_request"
+  },
+  {
+    "caller": "src/flask/templating.py::_default_template_ctx_processor",
+    "callee": "src/flask/ctx.py::AppContext.request"
+  },
+  {
+    "caller": "src/flask/templating.py::_render",
+    "callee": "src/flask/app.py::Flask.update_template_context"
+  },
+  {
+    "caller": "src/flask/templating.py::render_template_string",
+    "callee": "src/flask/templating.py::_render"
+  },
+  {
+    "caller": "src/flask/testing.py::EnvironBuilder.json_dumps",
+    "callee": "src/flask/json/provider.py::DefaultJSONProvider.dumps"
+  },
+  {
+    "caller": "src/flask/testing.py::FlaskClient.__init__",
+    "callee": "src/flask/testing.py::_get_werkzeug_version"
+  },
+  {
+    "caller": "src/flask/testing.py::FlaskClient._request_from_builder_args",
+    "callee": "src/flask/testing.py::EnvironBuilder.__init__"
+  },
+  {
+    "caller": "src/flask/testing.py::FlaskClient._request_from_builder_args",
+    "callee": "src/flask/testing.py::FlaskClient._copy_environ"
+  },
+  {
+    "caller": "src/flask/testing.py::FlaskClient.open",
+    "callee": "src/flask/testing.py::FlaskClient._request_from_builder_args"
+  },
+  {
+    "caller": "src/flask/wrappers.py::Request.blueprint",
+    "callee": "src/flask/wrappers.py::Request.endpoint"
+  },
+  {
+    "caller": "src/flask/wrappers.py::Request.blueprints",
+    "callee": "src/flask/helpers.py::_split_blueprint_path"
+  },
+  {
+    "caller": "src/flask/wrappers.py::Request.blueprints",
+    "callee": "src/flask/wrappers.py::Request.blueprint"
+  }
+]

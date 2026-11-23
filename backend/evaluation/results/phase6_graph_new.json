@@ -1,0 +1,162 @@
+{
+  "wall_clock_seconds": 84.08,
+  "graph_builder_version": "sprint2-ast-graph",
+  "edge_direction_doc": "A -> B means A calls/imports/inherits/decorates B",
+  "node_count": 2519,
+  "edge_count": 3014,
+  "edge_to_node_ratio": 1.1965,
+  "edge_counts_by_type": {
+    "calls": 1839,
+    "inherits": 112,
+    "imports": 411,
+    "decorates": 652
+  },
+  "edge_counts_by_source": {
+    "static": 2855,
+    "both": 74,
+    "dynamic": 85
+  },
+  "edge_counts_by_confidence": {
+    "extracted": 2830,
+    "ambiguous": 25,
+    "dynamic": 159
+  },
+  "node_counts_by_tag": {
+    "is_src": 721,
+    "is_test": 1599,
+    "is_docs": 89,
+    "external": 149
+  },
+  "call_phase_stats": {
+    "wall_clock_seconds": 80.5,
+    "total_sites": 3961,
+    "resolved_sites": 2842,
+    "ambiguous_sites": 8,
+    "unresolved_sites": 1054,
+    "unsupported_sites": 57,
+    "top10_unresolved_patterns": [
+      [
+        "attr:get",
+        260
+      ],
+      [
+        "attr:route",
+        169
+      ],
+      [
+        "attr:register_blueprint",
+        55
+      ],
+      [
+        "unsupported:subscript",
+        40
+      ],
+      [
+        "attr:keys",
+        37
+      ],
+      [
+        "attr:post",
+        31
+      ],
+      [
+        "attr:test_request_context",
+        31
+      ],
+      [
+        "attr:add_url_rule",
+        27
+      ],
+      [
+        "attr:errorhandler",
+        22
+      ],
+      [
+        "attr:app_context",
+        20
+      ]
+    ]
+  },
+  "top10_by_pagerank": [
+    {
+      "node": "src/flask/sansio/blueprints.py::Blueprint.record_once",
+      "pagerank": 0.005692920821334585,
+      "is_test": false,
+      "is_src": true,
+      "is_docs": false
+    },
+    {
+      "node": "examples/tutorial/flaskr/db.py::get_db",
+      "pagerank": 0.0038027545574689436,
+      "is_test": false,
+      "is_src": false,
+      "is_docs": true
+    },
+    {
+      "node": "src/flask/sansio/blueprints.py::Blueprint.record",
+      "pagerank": 0.0031828082357648075,
+      "is_test": false,
+      "is_src": true,
+      "is_docs": false
+    },
+    {
+      "node": "src/flask/sansio/scaffold.py::Scaffold._method_route",
+      "pagerank": 0.002724142313043533,
+      "is_test": false,
+      "is_src": true,
+      "is_docs": false
+    },
+    {
+      "node": "src/flask/json/tag.py::TaggedJSONSerializer.tag",
+      "pagerank": 0.0022969779718309737,
+      "is_test": false,
+      "is_src": true,
+      "is_docs": false
+    },
+    {
+      "node": "src/flask/app.py::Flask.ensure_sync",
+      "pagerank": 0.0018609927343534432,
+      "is_test": false,
+      "is_src": true,
+      "is_docs": false
+    },
+    {
+      "node": "src/flask/sansio/scaffold.py::Scaffold.route",
+      "pagerank": 0.0017518433172769405,
+      "is_test": false,
+      "is_src": true,
+      "is_docs": false
+    },
+    {
+      "node": "src/flask/globals.py::ProxyMixin._get_current_object",
+      "pagerank": 0.0016770613954952102,
+      "is_test": false,
+      "is_src": true,
+      "is_docs": false
+    },
+    {
+      "node": "src/flask/sansio/scaffold.py::setupmethod",
+      "pagerank": 0.001585201745459707,
+      "is_test": false,
+      "is_src": true,
+      "is_docs": false
+    },
+    {
+      "node": "src/flask/sansio/scaffold.py::setupmethod.<locals>.wrapper_func",
+      "pagerank": 0.001578156576747697,
+      "is_test": false,
+      "is_src": true,
+      "is_docs": false
+    }
+  ],
+  "static_vs_dynamic": {
+    "dynamic_edge_count": 159,
+    "found_by_static_too": 74,
+    "static_recall": 0.465
+  },
+  "baseline": {
+    "node_count": 1309,
+    "edge_count": 18320,
+    "edge_to_node_ratio": 13.9954
+  }
+}

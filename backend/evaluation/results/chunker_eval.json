@@ -1,0 +1,543 @@
+{
+  "repo": "flask",
+  "query_count": 20,
+  "embedding_model": "all-MiniLM-L6-v2",
+  "winner": "greedy_sibling_merge",
+  "ranking_rule": "max recall@5, then MRR",
+  "results": [
+    {
+      "chunker": "function_level",
+      "chunk_count": 2527,
+      "skipped_files": 0,
+      "seconds_chunking": 20.39,
+      "seconds_embedding": 160.73,
+      "recall_at_1": 0.25,
+      "recall_at_5": 0.6,
+      "recall_at_10": 0.85,
+      "mrr": 0.4314
+    },
+    {
+      "chunker": "class_level",
+      "chunk_count": 1971,
+      "skipped_files": 0,
+      "seconds_chunking": 13.43,
+      "seconds_embedding": 131.09,
+      "recall_at_1": 0.25,
+      "recall_at_5": 0.6,
+      "recall_at_10": 0.8,
+      "mrr": 0.4203
+    },
+    {
+      "chunker": "sliding_window",
+      "chunk_count": 1761,
+      "skipped_files": 0,
+      "seconds_chunking": 18.37,
+      "seconds_embedding": 114.39,
+      "recall_at_1": 0.35,
+      "recall_at_5": 0.6,
+      "recall_at_10": 0.9,
+      "mrr": 0.4913
+    },
+    {
+      "chunker": "greedy_sibling_merge",
+      "chunk_count": 1015,
+      "skipped_files": 0,
+      "seconds_chunking": 547.2,
+      "seconds_embedding": 90.18,
+      "recall_at_1": 0.45,
+      "recall_at_5": 0.8,
+      "recall_at_10": 0.85,
+      "mrr": 0.5809
+    }
+  ],
+  "per_strategy": {
+    "function_level": [
+      {
+        "query": "How does Flask handle an incoming WSGI request?",
+        "expected_file": "src/flask/app.py",
+        "expected_qualname": "Flask.wsgi_app",
+        "rank_of_first_hit": 8
+      },
+      {
+        "query": "Where is the request dispatcher that routes a request to a view function?",
+        "expected_file": "src/flask/app.py",
+        "expected_qualname": "Flask.dispatch_request",
+        "rank_of_first_hit": 28
+      },
+      {
+        "query": "How does Flask handle HTTP exceptions?",
+        "expected_file": "src/flask/app.py",
+        "expected_qualname": "Flask.handle_http_exception",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Flask CLI command group",
+        "expected_file": "src/flask/cli.py",
+        "expected_qualname": "AppGroup",
+        "rank_of_first_hit": 3
+      },
+      {
+        "query": "Flask configuration object for app settings",
+        "expected_file": "src/flask/config.py",
+        "expected_qualname": "Config",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Secure cookie session serialization",
+        "expected_file": "src/flask/sessions.py",
+        "expected_qualname": "SecureCookieSessionInterface",
+        "rank_of_first_hit": 2
+      },
+      {
+        "query": "Decorator to register a URL route",
+        "expected_file": "src/flask/sansio/scaffold.py",
+        "expected_qualname": "Scaffold.route",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Request-scoped globals like `request` and `session`",
+        "expected_file": "src/flask/globals.py",
+        "expected_qualname": "",
+        "rank_of_first_hit": 10
+      },
+      {
+        "query": "Context class for an active Flask application",
+        "expected_file": "src/flask/ctx.py",
+        "expected_qualname": "AppContext",
+        "rank_of_first_hit": 3
+      },
+      {
+        "query": "Test client for driving the app without a real server",
+        "expected_file": "src/flask/testing.py",
+        "expected_qualname": "FlaskClient",
+        "rank_of_first_hit": 78
+      },
+      {
+        "query": "Serve static files from a directory",
+        "expected_file": "src/flask/helpers.py",
+        "expected_qualname": "send_from_directory",
+        "rank_of_first_hit": 17
+      },
+      {
+        "query": "Build a URL for a named endpoint",
+        "expected_file": "src/flask/helpers.py",
+        "expected_qualname": "url_for",
+        "rank_of_first_hit": 2
+      },
+      {
+        "query": "Flash message helpers",
+        "expected_file": "src/flask/helpers.py",
+        "expected_qualname": "get_flashed_messages",
+        "rank_of_first_hit": 4
+      },
+      {
+        "query": "Register a blueprint on an app",
+        "expected_file": "src/flask/sansio/app.py",
+        "expected_qualname": "App.register_blueprint",
+        "rank_of_first_hit": 8
+      },
+      {
+        "query": "Class-based view base class",
+        "expected_file": "src/flask/views.py",
+        "expected_qualname": "View",
+        "rank_of_first_hit": 2
+      },
+      {
+        "query": "Method-based class view that dispatches by HTTP method",
+        "expected_file": "src/flask/views.py",
+        "expected_qualname": "MethodView",
+        "rank_of_first_hit": 2
+      },
+      {
+        "query": "Signal fired when a request starts",
+        "expected_file": "src/flask/signals.py",
+        "expected_qualname": "",
+        "rank_of_first_hit": 7
+      },
+      {
+        "query": "Stream a response incrementally",
+        "expected_file": "src/flask/helpers.py",
+        "expected_qualname": "stream_with_context",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Set up the Jinja templating environment",
+        "expected_file": "src/flask/templating.py",
+        "expected_qualname": "Environment",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Decorator to run code before every request",
+        "expected_file": "src/flask/sansio/scaffold.py",
+        "expected_qualname": "Scaffold",
+        "rank_of_first_hit": 9
+      }
+    ],
+    "class_level": [
+      {
+        "query": "How does Flask handle an incoming WSGI request?",
+        "expected_file": "src/flask/app.py",
+        "expected_qualname": "Flask.wsgi_app",
+        "rank_of_first_hit": 6
+      },
+      {
+        "query": "Where is the request dispatcher that routes a request to a view function?",
+        "expected_file": "src/flask/app.py",
+        "expected_qualname": "Flask.dispatch_request",
+        "rank_of_first_hit": 21
+      },
+      {
+        "query": "How does Flask handle HTTP exceptions?",
+        "expected_file": "src/flask/app.py",
+        "expected_qualname": "Flask.handle_http_exception",
+        "rank_of_first_hit": 3
+      },
+      {
+        "query": "Flask CLI command group",
+        "expected_file": "src/flask/cli.py",
+        "expected_qualname": "AppGroup",
+        "rank_of_first_hit": 3
+      },
+      {
+        "query": "Flask configuration object for app settings",
+        "expected_file": "src/flask/config.py",
+        "expected_qualname": "Config",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Secure cookie session serialization",
+        "expected_file": "src/flask/sessions.py",
+        "expected_qualname": "SecureCookieSessionInterface",
+        "rank_of_first_hit": 2
+      },
+      {
+        "query": "Decorator to register a URL route",
+        "expected_file": "src/flask/sansio/scaffold.py",
+        "expected_qualname": "Scaffold.route",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Request-scoped globals like `request` and `session`",
+        "expected_file": "src/flask/globals.py",
+        "expected_qualname": "",
+        "rank_of_first_hit": 7
+      },
+      {
+        "query": "Context class for an active Flask application",
+        "expected_file": "src/flask/ctx.py",
+        "expected_qualname": "AppContext",
+        "rank_of_first_hit": 2
+      },
+      {
+        "query": "Test client for driving the app without a real server",
+        "expected_file": "src/flask/testing.py",
+        "expected_qualname": "FlaskClient",
+        "rank_of_first_hit": 68
+      },
+      {
+        "query": "Serve static files from a directory",
+        "expected_file": "src/flask/helpers.py",
+        "expected_qualname": "send_from_directory",
+        "rank_of_first_hit": 11
+      },
+      {
+        "query": "Build a URL for a named endpoint",
+        "expected_file": "src/flask/helpers.py",
+        "expected_qualname": "url_for",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Flash message helpers",
+        "expected_file": "src/flask/helpers.py",
+        "expected_qualname": "get_flashed_messages",
+        "rank_of_first_hit": 4
+      },
+      {
+        "query": "Register a blueprint on an app",
+        "expected_file": "src/flask/sansio/app.py",
+        "expected_qualname": "App.register_blueprint",
+        "rank_of_first_hit": 8
+      },
+      {
+        "query": "Class-based view base class",
+        "expected_file": "src/flask/views.py",
+        "expected_qualname": "View",
+        "rank_of_first_hit": 5
+      },
+      {
+        "query": "Method-based class view that dispatches by HTTP method",
+        "expected_file": "src/flask/views.py",
+        "expected_qualname": "MethodView",
+        "rank_of_first_hit": 2
+      },
+      {
+        "query": "Signal fired when a request starts",
+        "expected_file": "src/flask/signals.py",
+        "expected_qualname": "",
+        "rank_of_first_hit": 7
+      },
+      {
+        "query": "Stream a response incrementally",
+        "expected_file": "src/flask/helpers.py",
+        "expected_qualname": "stream_with_context",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Set up the Jinja templating environment",
+        "expected_file": "src/flask/templating.py",
+        "expected_qualname": "Environment",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Decorator to run code before every request",
+        "expected_file": "src/flask/sansio/scaffold.py",
+        "expected_qualname": "Scaffold",
+        "rank_of_first_hit": 17
+      }
+    ],
+    "sliding_window": [
+      {
+        "query": "How does Flask handle an incoming WSGI request?",
+        "expected_file": "src/flask/app.py",
+        "expected_qualname": "Flask.wsgi_app",
+        "rank_of_first_hit": 4
+      },
+      {
+        "query": "Where is the request dispatcher that routes a request to a view function?",
+        "expected_file": "src/flask/app.py",
+        "expected_qualname": "Flask.dispatch_request",
+        "rank_of_first_hit": 8
+      },
+      {
+        "query": "How does Flask handle HTTP exceptions?",
+        "expected_file": "src/flask/app.py",
+        "expected_qualname": "Flask.handle_http_exception",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Flask CLI command group",
+        "expected_file": "src/flask/cli.py",
+        "expected_qualname": "AppGroup",
+        "rank_of_first_hit": 6
+      },
+      {
+        "query": "Flask configuration object for app settings",
+        "expected_file": "src/flask/config.py",
+        "expected_qualname": "Config",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Secure cookie session serialization",
+        "expected_file": "src/flask/sessions.py",
+        "expected_qualname": "SecureCookieSessionInterface",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Decorator to register a URL route",
+        "expected_file": "src/flask/sansio/scaffold.py",
+        "expected_qualname": "Scaffold.route",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Request-scoped globals like `request` and `session`",
+        "expected_file": "src/flask/globals.py",
+        "expected_qualname": "",
+        "rank_of_first_hit": 6
+      },
+      {
+        "query": "Context class for an active Flask application",
+        "expected_file": "src/flask/ctx.py",
+        "expected_qualname": "AppContext",
+        "rank_of_first_hit": 6
+      },
+      {
+        "query": "Test client for driving the app without a real server",
+        "expected_file": "src/flask/testing.py",
+        "expected_qualname": "FlaskClient",
+        "rank_of_first_hit": 151
+      },
+      {
+        "query": "Serve static files from a directory",
+        "expected_file": "src/flask/helpers.py",
+        "expected_qualname": "send_from_directory",
+        "rank_of_first_hit": 8
+      },
+      {
+        "query": "Build a URL for a named endpoint",
+        "expected_file": "src/flask/helpers.py",
+        "expected_qualname": "url_for",
+        "rank_of_first_hit": 3
+      },
+      {
+        "query": "Flash message helpers",
+        "expected_file": "src/flask/helpers.py",
+        "expected_qualname": "get_flashed_messages",
+        "rank_of_first_hit": 3
+      },
+      {
+        "query": "Register a blueprint on an app",
+        "expected_file": "src/flask/sansio/app.py",
+        "expected_qualname": "App.register_blueprint",
+        "rank_of_first_hit": 19
+      },
+      {
+        "query": "Class-based view base class",
+        "expected_file": "src/flask/views.py",
+        "expected_qualname": "View",
+        "rank_of_first_hit": 2
+      },
+      {
+        "query": "Method-based class view that dispatches by HTTP method",
+        "expected_file": "src/flask/views.py",
+        "expected_qualname": "MethodView",
+        "rank_of_first_hit": 2
+      },
+      {
+        "query": "Signal fired when a request starts",
+        "expected_file": "src/flask/signals.py",
+        "expected_qualname": "",
+        "rank_of_first_hit": 10
+      },
+      {
+        "query": "Stream a response incrementally",
+        "expected_file": "src/flask/helpers.py",
+        "expected_qualname": "stream_with_context",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Set up the Jinja templating environment",
+        "expected_file": "src/flask/templating.py",
+        "expected_qualname": "Environment",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Decorator to run code before every request",
+        "expected_file": "src/flask/sansio/scaffold.py",
+        "expected_qualname": "Scaffold",
+        "rank_of_first_hit": 1
+      }
+    ],
+    "greedy_sibling_merge": [
+      {
+        "query": "How does Flask handle an incoming WSGI request?",
+        "expected_file": "src/flask/app.py",
+        "expected_qualname": "Flask.wsgi_app",
+        "rank_of_first_hit": 5
+      },
+      {
+        "query": "Where is the request dispatcher that routes a request to a view function?",
+        "expected_file": "src/flask/app.py",
+        "expected_qualname": "Flask.dispatch_request",
+        "rank_of_first_hit": 11
+      },
+      {
+        "query": "How does Flask handle HTTP exceptions?",
+        "expected_file": "src/flask/app.py",
+        "expected_qualname": "Flask.handle_http_exception",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Flask CLI command group",
+        "expected_file": "src/flask/cli.py",
+        "expected_qualname": "AppGroup",
+        "rank_of_first_hit": 3
+      },
+      {
+        "query": "Flask configuration object for app settings",
+        "expected_file": "src/flask/config.py",
+        "expected_qualname": "Config",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Secure cookie session serialization",
+        "expected_file": "src/flask/sessions.py",
+        "expected_qualname": "SecureCookieSessionInterface",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Decorator to register a URL route",
+        "expected_file": "src/flask/sansio/scaffold.py",
+        "expected_qualname": "Scaffold.route",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Request-scoped globals like `request` and `session`",
+        "expected_file": "src/flask/globals.py",
+        "expected_qualname": "",
+        "rank_of_first_hit": 6
+      },
+      {
+        "query": "Context class for an active Flask application",
+        "expected_file": "src/flask/ctx.py",
+        "expected_qualname": "AppContext",
+        "rank_of_first_hit": 2
+      },
+      {
+        "query": "Test client for driving the app without a real server",
+        "expected_file": "src/flask/testing.py",
+        "expected_qualname": "FlaskClient",
+        "rank_of_first_hit": 27
+      },
+      {
+        "query": "Serve static files from a directory",
+        "expected_file": "src/flask/helpers.py",
+        "expected_qualname": "send_from_directory",
+        "rank_of_first_hit": 5
+      },
+      {
+        "query": "Build a URL for a named endpoint",
+        "expected_file": "src/flask/helpers.py",
+        "expected_qualname": "url_for",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Flash message helpers",
+        "expected_file": "src/flask/helpers.py",
+        "expected_qualname": "get_flashed_messages",
+        "rank_of_first_hit": 4
+      },
+      {
+        "query": "Register a blueprint on an app",
+        "expected_file": "src/flask/sansio/app.py",
+        "expected_qualname": "App.register_blueprint",
+        "rank_of_first_hit": 11
+      },
+      {
+        "query": "Class-based view base class",
+        "expected_file": "src/flask/views.py",
+        "expected_qualname": "View",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Method-based class view that dispatches by HTTP method",
+        "expected_file": "src/flask/views.py",
+        "expected_qualname": "MethodView",
+        "rank_of_first_hit": 2
+      },
+      {
+        "query": "Signal fired when a request starts",
+        "expected_file": "src/flask/signals.py",
+        "expected_qualname": "",
+        "rank_of_first_hit": 4
+      },
+      {
+        "query": "Stream a response incrementally",
+        "expected_file": "src/flask/helpers.py",
+        "expected_qualname": "stream_with_context",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Set up the Jinja templating environment",
+        "expected_file": "src/flask/templating.py",
+        "expected_qualname": "Environment",
+        "rank_of_first_hit": 1
+      },
+      {
+        "query": "Decorator to run code before every request",
+        "expected_file": "src/flask/sansio/scaffold.py",
+        "expected_qualname": "Scaffold",
+        "rank_of_first_hit": 1
+      }
+    ]
+  }
+}

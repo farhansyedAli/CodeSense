@@ -1,0 +1,63 @@
+{
+  "graph": "backend\\evaluation\\results\\graph_flask_new.graphml",
+  "entry_point_count": 65,
+  "findings_total": 6,
+  "findings_passed": 6,
+  "pass_rate": 1.0,
+  "rows": [
+    {
+      "dep": "werkzeug",
+      "advisory": "GHSA-2g68-c3qc-8985",
+      "expected_reachable": true,
+      "notes": "Flask core WSGI dep",
+      "node_in_graph": true,
+      "reachable": true,
+      "pass": true
+    },
+    {
+      "dep": "jinja2",
+      "advisory": "GHSA-h5c8-rqwp-cp95",
+      "expected_reachable": true,
+      "notes": "Flask templating dep",
+      "node_in_graph": true,
+      "reachable": true,
+      "pass": true
+    },
+    {
+      "dep": "click",
+      "advisory": "GHSA-qq66-rhrg-4pcx",
+      "expected_reachable": true,
+      "notes": "Flask CLI dep",
+      "node_in_graph": true,
+      "reachable": true,
+      "pass": true
+    },
+    {
+      "dep": "itsdangerous",
+      "advisory": "PYSEC-2021-21",
+      "expected_reachable": true,
+      "notes": "Flask session signing dep",
+      "node_in_graph": true,
+      "reachable": true,
+      "pass": true
+    },
+    {
+      "dep": "blinker",
+      "advisory": "PYSEC-2019-166",
+      "expected_reachable": true,
+      "notes": "Flask signals dep (optional)",
+      "node_in_graph": true,
+      "reachable": true,
+      "pass": true
+    },
+    {
+      "dep": "django",
+      "advisory": "N/A (negative control)",
+      "expected_reachable": false,
+      "notes": "NOT a Flask dep; reachability must be False",
+      "node_in_graph": false,
+      "reachable": false,
+      "pass": true
+    }
+  ]
+}

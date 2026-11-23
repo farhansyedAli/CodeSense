@@ -1,0 +1,154 @@
+{
+  "repo": "flask",
+  "repo_id": "fa1df9ec-61f6-4497-ab7d-184bbc30aee5",
+  "schema": {
+    "query": "A natural-language question or lookup that someone searching Flask's code base might ask.",
+    "expected_file": "Repo-relative path of the file containing the canonical answer.",
+    "expected_qualname": "Within-file qualname of the symbol that answers it; empty string means a file-level location (imports / module-level).",
+    "expected_lines": "[start_line, end_line] of the canonical region in the source file. A chunker's chunk 'hits' the query when it is in the same file AND its own [start_line, end_line] overlaps this range.",
+    "notes": "Why this is the expected answer."
+  },
+  "method": "Line ranges were pulled from `data/repos/fa1df9ec-61f6-4497-ab7d-184bbc30aee5/` by grepping definitions and reading the surrounding code. A result is correct if the top-K list contains any chunk in the expected file whose line range overlaps the expected range.",
+  "queries": [
+    {
+      "query": "How does Flask handle an incoming WSGI request?",
+      "expected_file": "src/flask/app.py",
+      "expected_qualname": "Flask.wsgi_app",
+      "expected_lines": [1566, 1630],
+      "notes": "wsgi_app is the actual WSGI entry point that __call__ delegates to."
+    },
+    {
+      "query": "Where is the request dispatcher that routes a request to a view function?",
+      "expected_file": "src/flask/app.py",
+      "expected_qualname": "Flask.dispatch_request",
+      "expected_lines": [966, 1020],
+      "notes": "dispatch_request looks up the endpoint and invokes the view."
+    },
+    {
+      "query": "How does Flask handle HTTP exceptions?",
+      "expected_file": "src/flask/app.py",
+      "expected_qualname": "Flask.handle_http_exception",
+      "expected_lines": [830, 864],
+      "notes": "handle_http_exception is the dedicated HTTPException handler."
+    },
+    {
+      "query": "Flask CLI command group",
+      "expected_file": "src/flask/cli.py",
+      "expected_qualname": "AppGroup",
+      "expected_lines": [405, 440],
+      "notes": "AppGroup is the click.Group subclass used by FlaskGroup. FlaskGroup also acceptable."
+    },
+    {
+      "query": "Flask configuration object for app settings",
+      "expected_file": "src/flask/config.py",
+      "expected_qualname": "Config",
+      "expected_lines": [50, 250],
+      "notes": "Config(dict) is the central config class."
+    },
+    {
+      "query": "Secure cookie session serialization",
+      "expected_file": "src/flask/sessions.py",
+      "expected_qualname": "SecureCookieSessionInterface",
+      "expected_lines": [284, 380],
+      "notes": "Handles signing / serializing session cookies."
+    },
+    {
+      "query": "Decorator to register a URL route",
+      "expected_file": "src/flask/sansio/scaffold.py",
+      "expected_qualname": "Scaffold.route",
+      "expected_lines": [52, 708],
+      "notes": "Scaffold.route is the @app.route decorator implementation."
+    },
+    {
+      "query": "Request-scoped globals like `request` and `session`",
+      "expected_file": "src/flask/globals.py",
+      "expected_qualname": "",
+      "expected_lines": [1, 64],
+      "notes": "globals.py declares the module-level LocalProxy objects."
+    },
+    {
+      "query": "Context class for an active Flask application",
+      "expected_file": "src/flask/ctx.py",
+      "expected_qualname": "AppContext",
+      "expected_lines": [260, 400],
+      "notes": "AppContext is the app context class."
+    },
+    {
+      "query": "Test client for driving the app without a real server",
+      "expected_file": "src/flask/testing.py",
+      "expected_qualname": "FlaskClient",
+      "expected_lines": [1, 300],
+      "notes": "FlaskClient extends werkzeug Client."
+    },
+    {
+      "query": "Serve static files from a directory",
+      "expected_file": "src/flask/helpers.py",
+      "expected_qualname": "send_from_directory",
+      "expected_lines": [543, 620],
+      "notes": "send_from_directory serves a file under a dir."
+    },
+    {
+      "query": "Build a URL for a named endpoint",
+      "expected_file": "src/flask/helpers.py",
+      "expected_qualname": "url_for",
+      "expected_lines": [200, 253],
+      "notes": "url_for builds a URL given endpoint + values."
+    },
+    {
+      "query": "Flash message helpers",
+      "expected_file": "src/flask/helpers.py",
+      "expected_qualname": "get_flashed_messages",
+      "expected_lines": [360, 420],
+      "notes": "get_flashed_messages reads / clears flashes."
+    },
+    {
+      "query": "Register a blueprint on an app",
+      "expected_file": "src/flask/sansio/app.py",
+      "expected_qualname": "App.register_blueprint",
+      "expected_lines": [571, 630],
+      "notes": "App.register_blueprint adds a blueprint. Blueprint.register_blueprint (nested blueprint) also acceptable."
+    },
+    {
+      "query": "Class-based view base class",
+      "expected_file": "src/flask/views.py",
+      "expected_qualname": "View",
+      "expected_lines": [16, 137],
+      "notes": "View is the base class for class-based views."
+    },
+    {
+      "query": "Method-based class view that dispatches by HTTP method",
+      "expected_file": "src/flask/views.py",
+      "expected_qualname": "MethodView",
+      "expected_lines": [138, 220],
+      "notes": "MethodView dispatches get/post/put/delete to methods."
+    },
+    {
+      "query": "Signal fired when a request starts",
+      "expected_file": "src/flask/signals.py",
+      "expected_qualname": "",
+      "expected_lines": [1, 80],
+      "notes": "signals.py defines request_started / request_finished etc."
+    },
+    {
+      "query": "Stream a response incrementally",
+      "expected_file": "src/flask/helpers.py",
+      "expected_qualname": "stream_with_context",
+      "expected_lines": [52, 120],
+      "notes": "stream_with_context wraps a generator so it has the request ctx."
+    },
+    {
+      "query": "Set up the Jinja templating environment",
+      "expected_file": "src/flask/templating.py",
+      "expected_qualname": "Environment",
+      "expected_lines": [1, 100],
+      "notes": "Environment subclass that knows about Flask app config."
+    },
+    {
+      "query": "Decorator to run code before every request",
+      "expected_file": "src/flask/sansio/scaffold.py",
+      "expected_qualname": "Scaffold",
+      "expected_lines": [52, 708],
+      "notes": "Scaffold.before_request is defined on the Scaffold class."
+    }
+  ]
+}

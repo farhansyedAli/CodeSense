@@ -13,6 +13,7 @@ numpy==2.5.3
 networkx==3.7
 tree_sitter==0.26.0
 tree_sitter_python==0.25.0
+jedi==0.20.1
 scikit-learn==1.9.1
 sentence_transformers==6.1.0
 httpx==0.28.1

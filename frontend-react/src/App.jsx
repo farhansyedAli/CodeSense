@@ -2,6 +2,8 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react
 import { AlertCircle, ExternalLink, Github, Loader2, Menu, Moon, RefreshCw, Sun, WifiOff } from "lucide-react";
 import Sidebar, { VIEWS } from "./components/Sidebar";
 import ConnectDialog from "./components/ConnectDialog";
+import ConfirmDelete from "./components/ConfirmDelete";
+import Resizer from "./components/Resizer";
 import SourcePanel from "./components/SourcePanel";
 import { FailedState, IndexingState, Welcome } from "./components/States";
 import QAView from "./views/QAView";
@@ -35,6 +37,12 @@ export default function App() {
   const [impactSymbol, setImpactSymbol] = useState(null);
   const [security, setSecurity] = useState({}); // repoId -> { data, error, scanning }
   const [toast, setToast] = useState(null);
+  const [toDelete, setToDelete] = useState(null);
+  // panel widths chosen by dragging (null = default width from tokens.css)
+  const [sidebarW, setSidebarW] = usePersistentState("cs.sidebarW", null);
+  const [sourceW, setSourceW] = usePersistentState("cs.sourceW", null);
+  const panelWidth = (sel) => document.querySelector(sel)?.getBoundingClientRect().width || 0;
+  const MAIN_MIN = 380; // the middle panel never gets narrower than this
 
   const repo = useMemo(() => repos.find((r) => r.id === selectedId) || null, [repos, selectedId]);
 
@@ -77,16 +85,38 @@ export default function App() {
     }
   }, []);
 
-  const reindex = async () => {
-    if (!repo) return;
+  // re-index a repository in place (same row, no duplicate in the list)
+  const reindex = async (target = repo) => {
+    if (!target) return;
     try {
-      const r = await api.connectRepository(repo.url);
+      await api.reindexRepository(target.id);
       await refresh();
-      setSelectedId(r.id);
-      showToast(`Re-indexing ${r.name}…`);
+      setSelectedId(target.id);
+      showToast(`Re-indexing ${target.name}…`);
     } catch (e) {
       showToast(e.message, "error");
     }
+  };
+
+  // delete a repository on the backend and forget everything kept for it here
+  const deleteRepo = async (target) => {
+    try {
+      await api.deleteRepository(target.id);
+    } catch (e) {
+      showToast(e.message, "error");
+      return false;
+    }
+    setChats((c) => { const { [target.id]: _, ...rest } = c; return rest; });
+    setSecurity((s) => { const { [target.id]: _, ...rest } = s; return rest; });
+    if (selectedId === target.id) {
+      const next = repos.find((r) => r.id !== target.id && r.status === "ready") || repos.find((r) => r.id !== target.id);
+      setSelectedId(next ? next.id : null);
+      setSource(null);
+    }
+    setToDelete(null);
+    await refresh();
+    showToast(`${target.name} was deleted.`);
+    return true;
   };
 
   const onConnected = async (r) => {
@@ -118,7 +148,7 @@ export default function App() {
   } else if (!repo) {
     content = <Welcome onConnect={() => setConnectOpen(true)} />;
   } else if (repo.status === "failed") {
-    content = <FailedState repo={repo} onRetry={reindex} />;
+    content = <FailedState repo={repo} onRetry={() => reindex(repo)} />;
   } else if (repo.status !== "ready") {
     content = <IndexingState repo={repo} />;
   } else if (view === "qa") {
@@ -149,7 +179,13 @@ export default function App() {
   }
 
   return (
-    <div className={`app ${source ? "with-source" : ""}`}>
+    <div
+      className={`app ${source ? "with-source" : ""}`}
+      style={{
+        ...(sidebarW ? { "--sidebar-w": `${sidebarW}px` } : {}),
+        ...(sourceW ? { "--source-w": `${sourceW}px` } : {}),
+      }}
+    >
       <a href="#main" className="skip-link">Skip to content</a>
       <Sidebar
         repos={repos}
@@ -165,6 +201,16 @@ export default function App() {
         onClearRecent={() => setRecent([])}
         open={navOpen}
         onClose={() => setNavOpen(false)}
+        onReindex={(r) => reindex(r)}
+        onDelete={(r) => setToDelete(r)}
+      />
+      <Resizer
+        side="left"
+        label="Resize sidebar"
+        min={220}
+        max={() => Math.min(520, window.innerWidth - MAIN_MIN - (source ? panelWidth(".source-panel") : 0))}
+        getWidth={() => panelWidth(".sidebar")}
+        onChange={setSidebarW}
       />
       {navOpen && <div className="scrim" onClick={() => setNavOpen(false)} />}
 
@@ -202,7 +248,7 @@ export default function App() {
               </a>
               <button
                 className="btn ghost sm"
-                onClick={reindex}
+                onClick={() => reindex(repo)}
                 disabled={repo.status === "indexing" || repo.status === "pending"}
                 title="Clone and index the latest version again"
               >
@@ -238,9 +284,20 @@ export default function App() {
       </main>
 
       {source && repo && (
-        <SourcePanel repoId={repo.id} source={source} onClose={() => setSource(null)} />
+        <>
+          <Resizer
+            side="right"
+            label="Resize code panel"
+            min={320}
+            max={() => window.innerWidth - panelWidth(".sidebar") - MAIN_MIN}
+            getWidth={() => panelWidth(".source-panel")}
+            onChange={setSourceW}
+          />
+          <SourcePanel repoId={repo.id} source={source} onClose={() => setSource(null)} />
+        </>
       )}
 
+      <ConfirmDelete repo={toDelete} onCancel={() => setToDelete(null)} onConfirm={deleteRepo} />
       <ConnectDialog open={connectOpen} onClose={() => setConnectOpen(false)} onConnected={onConnected} />
 
       {toast && (

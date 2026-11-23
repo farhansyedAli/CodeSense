@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
-  AlertCircle, GitBranch, History, Loader2, MessagesSquare, Network,
-  Plus, Search, ShieldCheck, Workflow, X,
+  AlertCircle, ExternalLink, GitBranch, History, Loader2, MessagesSquare, MoreHorizontal,
+  Network, Plus, RefreshCw, Search, ShieldCheck, Trash2, Workflow, X,
 } from "lucide-react";
 import { formatNumber } from "../lib/utils";
 
@@ -33,9 +33,78 @@ function RepoStatus({ repo }) {
   );
 }
 
+const isBusy = (r) => r.status === "indexing" || r.status === "pending";
+
+// "⋯" menu on each repository: re-index, open on GitHub, delete.
+// Rendered with position: fixed so the scrolling repo list cannot clip it.
+function RepoMenu({ repo, onReindex, onDelete }) {
+  const [pos, setPos] = useState(null);
+  const btnRef = useRef(null);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (!pos) return;
+    const close = (e) => {
+      if (e.type === "keydown" && e.key !== "Escape") return;
+      if (e.type === "mousedown" && (menuRef.current?.contains(e.target) || btnRef.current?.contains(e.target))) return;
+      setPos(null);
+    };
+    window.addEventListener("mousedown", close);
+    window.addEventListener("keydown", close);
+    window.addEventListener("resize", close);
+    document.querySelector(".repo-list")?.addEventListener("scroll", close);
+    menuRef.current?.querySelector("button:not(:disabled)")?.focus();
+    return () => {
+      window.removeEventListener("mousedown", close);
+      window.removeEventListener("keydown", close);
+      window.removeEventListener("resize", close);
+      document.querySelector(".repo-list")?.removeEventListener("scroll", close);
+    };
+  }, [pos]);
+
+  const toggle = (e) => {
+    e.stopPropagation();
+    if (pos) return setPos(null);
+    const r = btnRef.current.getBoundingClientRect();
+    const top = Math.min(r.bottom + 4, window.innerHeight - 150);
+    setPos({ top, left: r.right - 200 > 8 ? r.right - 200 : 8 });
+  };
+  const run = (fn) => (e) => { e.stopPropagation(); setPos(null); fn(repo); };
+
+  return (
+    <>
+      <button
+        ref={btnRef}
+        className={`repo-more ${pos ? "open" : ""}`}
+        onClick={toggle}
+        aria-label={`Options for ${repo.name}`}
+        aria-haspopup="menu"
+        aria-expanded={!!pos}
+      >
+        <MoreHorizontal size={16} />
+      </button>
+      {pos && (
+        <div className="menu" role="menu" ref={menuRef} style={{ top: pos.top, left: pos.left }}>
+          <button role="menuitem" onClick={run(onReindex)} disabled={isBusy(repo)}>
+            <RefreshCw size={14} /> {isBusy(repo) ? "Indexing…" : "Re-index"}
+          </button>
+          <a role="menuitem" href={repo.url} target="_blank" rel="noopener noreferrer" onClick={() => setPos(null)}>
+            <ExternalLink size={14} /> Open on GitHub
+          </a>
+          <div className="menu-sep" />
+          <button role="menuitem" className="danger" onClick={run(onDelete)} disabled={isBusy(repo)}
+            title={isBusy(repo) ? "Wait for indexing to finish" : undefined}>
+            <Trash2 size={14} /> Delete repository
+          </button>
+        </div>
+      )}
+    </>
+  );
+}
+
 export default function Sidebar({
   repos, loaded, selectedId, onSelect, view, onView, onConnect,
-  securityCount, recent, onRecent, onClearRecent, open, onClose,
+  securityCount, recent, onRecent, onClearRecent, open, onClose, onReindex, onDelete,
 }) {
   const [filter, setFilter] = useState("");
   const shown = repos.filter((r) => r.name.toLowerCase().includes(filter.toLowerCase()));
@@ -101,22 +170,27 @@ export default function Sidebar({
             <p className="side-empty">No repositories yet. Connect a GitHub repo to start.</p>
           )}
           {shown.map((r) => (
-            <button
-              key={r.id}
-              className={`repo-item ${r.id === selectedId ? "active" : ""}`}
-              onClick={() => onSelect(r.id)}
-              title={r.url}
-            >
-              <GitBranch size={15} className="repo-icon" aria-hidden />
-              <span className="repo-text">
-                <span className="repo-name">{r.name}</span>
-                <RepoStatus repo={r} />
-              </span>
-              {(r.status === "indexing" || r.status === "pending") && (
-                <span className="repo-progress" style={{ width: `${r.progress ?? 0}%` }} aria-hidden />
-              )}
-            </button>
+            <div key={r.id} className={`repo-row ${r.id === selectedId ? "active" : ""}`}>
+              <button
+                className={`repo-item ${r.id === selectedId ? "active" : ""}`}
+                onClick={() => onSelect(r.id)}
+                title={r.url}
+              >
+                <GitBranch size={15} className="repo-icon" aria-hidden />
+                <span className="repo-text">
+                  <span className="repo-name">{r.name}</span>
+                  <RepoStatus repo={r} />
+                </span>
+                {isBusy(r) && (
+                  <span className="repo-progress" style={{ width: `${r.progress ?? 0}%` }} aria-hidden />
+                )}
+              </button>
+              <RepoMenu repo={r} onReindex={onReindex} onDelete={onDelete} />
+            </div>
           ))}
+          {loaded && repos.length > 0 && shown.length === 0 && (
+            <p className="side-empty">No repository matches “{filter}”.</p>
+          )}
         </div>
       </div>
 

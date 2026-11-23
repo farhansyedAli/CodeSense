@@ -50,6 +50,14 @@ export const api = {
   connectRepository: (url) =>
     request("/api/repositories", { method: "POST", body: JSON.stringify({ url }) }),
 
+  // re-index an existing repository (updates the same row in the database)
+  reindexRepository: (id) =>
+    request(`/api/repositories/${encodeURIComponent(id)}/reindex`, { method: "POST" }),
+
+  // delete a repository plus its clone and index files on the server
+  deleteRepository: (id) =>
+    request(`/api/repositories/${encodeURIComponent(id)}`, { method: "DELETE" }),
+
   repositoryStatus: (id) => request(`/api/repositories/${encodeURIComponent(id)}/status`),
 
   query: (repoId, question) =>

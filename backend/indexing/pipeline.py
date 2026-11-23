@@ -9,7 +9,9 @@ the progress reporting have changed.
 import os
 import json
 import shutil
+import stat
 import subprocess
+import sys
 from pathlib import Path
 from typing import Callable
 
@@ -199,13 +201,25 @@ def build_dependency_graph(chunks):
 # Full Pipeline
 # ─────────────────────────────────────────────────────────────────────────────
 
+def remove_dir(path: Path) -> None:
+    """Delete a folder, including git's read-only files (needed on Windows)."""
+    def _make_writable_and_retry(func, p, _exc):
+        os.chmod(p, stat.S_IWRITE)
+        func(p)
+
+    if sys.version_info >= (3, 12):
+        shutil.rmtree(path, onexc=_make_writable_and_retry)
+    else:
+        shutil.rmtree(path, onerror=_make_writable_and_retry)
+
+
 def clone_repository(repo_url: str, repo_id: str, pat: str | None = None) -> Path:
     """Clone a GitHub repo to local disk. Returns the local path."""
     REPOS_DIR.mkdir(parents=True, exist_ok=True)
     target = REPOS_DIR / repo_id
 
     if target.exists():
-        shutil.rmtree(target)
+        remove_dir(target)
 
     url = repo_url
     if pat and "github.com" in repo_url:

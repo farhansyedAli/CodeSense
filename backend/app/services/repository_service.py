@@ -1,11 +1,13 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import async_session
 from app.models import Repository
-from indexing.pipeline import index_repository
+from indexing.pipeline import INDEXES_DIR, REPOS_DIR, index_repository, remove_dir
+
+ACTIVE_STATUSES = ("pending", "indexing")
 
 
 def _repo_name_from_url(url: str) -> str:
@@ -13,6 +15,44 @@ def _repo_name_from_url(url: str) -> str:
     cleaned = url.rstrip("/").removesuffix(".git")
     parts = cleaned.split("github.com/")[-1].split("/")
     return "/".join(parts[:2]) if len(parts) >= 2 else cleaned
+
+
+def normalize_url(url: str) -> str:
+    """https://github.com/Owner/Repo(.git)(/) -> https://github.com/owner/repo"""
+    name = _repo_name_from_url(url.strip())
+    return f"https://github.com/{name}".lower()
+
+
+async def find_by_url(db: AsyncSession, url: str) -> Repository | None:
+    """Find an existing record for the same GitHub repository (case-insensitive)."""
+    name = _repo_name_from_url(url.strip()).lower()
+    result = await db.execute(
+        select(Repository)
+        .where(func.lower(Repository.name) == name)
+        .order_by(Repository.created_at.desc())
+    )
+    return result.scalars().first()
+
+
+async def reset_for_reindex(db: AsyncSession, repo: Repository) -> Repository:
+    """Put an existing record back to 'pending' so the same row is re-indexed."""
+    repo.status = "pending"
+    repo.stage = None
+    repo.progress = 0
+    repo.error_message = None
+    await db.commit()
+    await db.refresh(repo)
+    return repo
+
+
+async def delete_repository(db: AsyncSession, repo: Repository) -> None:
+    """Delete the DB record plus the cloned source and the index files on disk."""
+    repo_id = repo.id
+    await db.delete(repo)
+    await db.commit()
+    for folder in (REPOS_DIR / repo_id, INDEXES_DIR / repo_id):
+        if folder.exists():
+            remove_dir(folder)
 
 
 async def create_repository(db: AsyncSession, url: str) -> Repository:

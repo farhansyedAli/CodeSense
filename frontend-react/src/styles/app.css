@@ -89,7 +89,7 @@ input:focus-visible, textarea:focus-visible { box-shadow: none; }
 .count.danger { background: var(--red-soft); color: var(--red); }
 
 .side-section { display: flex; flex-direction: column; gap: 4px; min-height: 0; }
-.side-section.grow { flex: 1; }
+.side-section.grow { flex: 1 1 auto; min-height: 150px; }
 .side-label {
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 8px 4px; font-size: 11px; font-weight: 600;
@@ -103,7 +103,44 @@ input:focus-visible, textarea:focus-visible { box-shadow: none; }
 .side-search:focus-within { border-color: var(--accent); }
 .side-search input { flex: 1; background: none; border: 0; outline: none; font-size: 13px; min-width: 0; }
 .side-empty { font-size: 12.5px; color: var(--text-3); padding: 4px 8px; }
-.repo-list { display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+/* the list scrolls on its own; rows never shrink, so names stay readable */
+.repo-list {
+  display: flex; flex-direction: column; gap: 2px;
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  margin-right: -6px; padding-right: 6px;
+  scrollbar-width: thin; scrollbar-color: var(--scroll) transparent;
+}
+.repo-list::-webkit-scrollbar { width: 6px; }
+.repo-list::-webkit-scrollbar-thumb { border: 0; }
+.repo-row { position: relative; flex-shrink: 0; }
+.repo-row .repo-item { width: 100%; padding-right: 36px; }
+.repo-more {
+  position: absolute; top: 7px; right: 6px; width: 26px; height: 26px;
+  display: grid; place-items: center; border-radius: var(--r-sm);
+  color: var(--text-3); opacity: 0;
+  transition: opacity var(--fast) var(--ease), background var(--fast) var(--ease), color var(--fast) var(--ease);
+}
+.repo-row:hover .repo-more, .repo-row.active .repo-more, .repo-more:focus-visible, .repo-more.open { opacity: 1; }
+.repo-more:hover, .repo-more.open { background: var(--surface-3); color: var(--text); }
+@media (hover: none) { .repo-more { opacity: 1; } }
+
+/* dropdown menu */
+.menu {
+  position: fixed; z-index: 70; width: 200px; padding: 5px;
+  background: var(--surface-2); border: 1px solid var(--border-strong); border-radius: var(--r);
+  box-shadow: var(--shadow-lg); animation: rise var(--fast) var(--ease);
+}
+.menu button, .menu a {
+  display: flex; align-items: center; gap: 9px; width: 100%; padding: 8px 10px;
+  border-radius: var(--r-sm); font-size: 13px; color: var(--text); text-align: left;
+}
+.menu button:hover:not(:disabled), .menu a:hover { background: var(--surface-3); text-decoration: none; }
+.menu svg { color: var(--text-3); flex-shrink: 0; }
+.menu .danger, .menu .danger svg { color: var(--red); }
+.menu .danger:hover:not(:disabled) { background: var(--red-soft); }
+.menu-sep { height: 1px; margin: 4px 2px; background: var(--border); }
+.btn.danger-solid { background: var(--red); border-color: var(--red); color: #fff; font-weight: 600; }
+.btn.danger-solid:hover:not(:disabled) { filter: brightness(1.08); }
 .repo-item {
   position: relative; overflow: hidden;
   display: flex; align-items: flex-start; gap: 10px;
@@ -351,3 +388,36 @@ kbd {
   .steps { grid-template-columns: 1fr; }
   .welcome { padding: 48px 20px; }
 }
+.dialog.sm { max-width: 440px; }
+.dialog-icon.danger { background: var(--red-soft); color: var(--red); }
+.fail-reason {
+  display: inline-block; max-width: 520px; margin-bottom: 8px; padding: 6px 10px;
+  font-size: 12px; color: var(--red); background: var(--red-soft); border-radius: var(--r-sm);
+  overflow-wrap: anywhere; text-align: left;
+}
+
+/* ── resizable panels (drag the edge, double-click to reset) ── */
+.resizer {
+  position: fixed; top: 0; bottom: 0; z-index: 30; width: 9px;
+  cursor: col-resize; touch-action: none; outline: none;
+}
+.resizer-left { left: calc(var(--sidebar-w) - 5px); }
+.resizer-right { right: calc(var(--source-w) - 4px); }
+.resizer::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 4px; width: 1px;
+  background: transparent; transition: background var(--fast) var(--ease), width var(--fast) var(--ease), left var(--fast) var(--ease);
+}
+.resizer:hover::after, .resizer:focus-visible::after, .resizer.dragging::after {
+  left: 3px; width: 3px; background: var(--accent);
+}
+.resizer:hover::after { transition-delay: 150ms; }
+body.resizing { cursor: col-resize; user-select: none; }
+body.resizing .source-panel { animation: none; }
+body.resizing iframe, body.resizing canvas { pointer-events: none; }
+@media (max-width: 1100px) { .resizer-right { display: none; } }
+@media (max-width: 860px) { .resizer-left { display: none; } }
+
+/* fixed-size sidebar blocks never squash into each other; only the repo list shrinks */
+.sidebar > *:not(.grow) { flex-shrink: 0; }
+.brand-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand > div { min-width: 0; }

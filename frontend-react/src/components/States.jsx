@@ -75,7 +75,13 @@ export function FailedState({ repo, onRetry }) {
       title={`Indexing ${repo.name} failed`}
       action={<button className="btn" onClick={onRetry}>Try indexing again</button>}
     >
-      Check the backend terminal for the error, then retry. Private repositories are not supported yet.
+      {repo.error ? (
+        <>
+          <span className="fail-reason mono">{repo.error}</span>
+          <br />
+        </>
+      ) : null}
+      Check the backend terminal for details, then retry. Private repositories are not supported yet.
     </EmptyState>
   );
 }

@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from sqlalchemy import update
 
 from app.config import settings
 from app.database import engine, Base
@@ -19,6 +20,15 @@ async def lifespan(app: FastAPI):
     """Startup and shutdown events."""
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        # Indexing runs in a background task, so a restart in the middle of it
+        # leaves the row stuck as pending/indexing. Mark those as failed so they
+        # can be re-indexed or deleted from the UI.
+        await conn.execute(
+            update(Repository)
+            .where(Repository.status.in_(("pending", "indexing")))
+            .values(status="failed", stage="error",
+                    error_message="Indexing was interrupted because the server restarted.")
+        )
     print("[CodeSense] Database tables ready.")
     yield
     await engine.dispose()

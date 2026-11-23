@@ -10,7 +10,7 @@ export function useRepositories() {
   const [error, setError] = useState(null);
   const timer = useRef(null);
 
-  const refresh = useCallback(async () => {
+  const load = useCallback(async () => {
     try {
       const data = await api.listRepositories();
       setRepos(data);
@@ -24,20 +24,29 @@ export function useRepositories() {
     }
   }, []);
 
+  // poll every 2s while something is indexing, otherwise every 10s
+  const tickRef = useRef(null);
   useEffect(() => {
     let cancelled = false;
     const tick = async () => {
-      const data = await refresh();
-      if (cancelled) return;
+      clearTimeout(timer.current);
+      const data = await load();
+      if (cancelled) return data;
       const busy = (data || []).some((r) => r.status === "pending" || r.status === "indexing");
+      clearTimeout(timer.current);
       timer.current = setTimeout(tick, busy ? 2000 : 10000);
+      return data;
     };
+    tickRef.current = tick;
     tick();
     return () => {
       cancelled = true;
       clearTimeout(timer.current);
     };
-  }, [refresh]);
+  }, [load]);
+
+  // refreshing from outside also restarts the poll, so a new re-index is tracked at once
+  const refresh = useCallback(() => (tickRef.current ? tickRef.current() : load()), [load]);
 
   return { repos, loaded, error, refresh };
 }
